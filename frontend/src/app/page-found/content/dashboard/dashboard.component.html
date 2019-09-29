@@ -1,0 +1,70 @@
+<div class=" ">
+  <div class="pcoded-inner-content">
+    <!-- Main-body start -->
+    <div class="main-body">
+      <div class="page-wrapper">
+        <!-- Page-body start -->
+        <div class="page-body">
+          <div class="row">
+            <!-- order-card start -->
+            <div class="col-md-6 col-xl-3">
+              <div class="card bg-c-blue order-card">
+                <div class="card-block">
+                  <h6 class="m-b-20">Monthly Sales</h6>
+                  <h2 class="text-right"><i class="ti-shopping-cart f-left"></i><span>{{invoice_month.income | currency:"Rs. "}}</span></h2>
+                  <p class="m-b-0">No Of Bills<span class="f-right">{{invoice_month.total_invoice}}</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="card bg-c-green order-card">
+                <div class="card-block">
+                  <h6 class="m-b-20">Daily Sales</h6>
+                  <h2 class="text-right"><i class="ti-shopping-cart f-left"></i><span>{{invoice_day.income| currency:"Rs. "}}</span></h2>
+                  <p class="m-b-0">No Of Bills<span class="f-right">{{invoice_day.total_invoice}}</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="card bg-c-yellow order-card">
+                <div class="card-block">
+                  <h6 class="m-b-20">Monthly Returns</h6>
+                  <h2 class="text-right"><i class="ti-reload f-left"></i><span>{{grn_month.income| currency:"Rs. "}}</span></h2>
+                  <p class="m-b-0">No Of Bills<span class="f-right">{{grn_month.total_grn}}</span></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="card bg-c-pink order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">Daily Returns</h6>
+                    <h2 class="text-right"><i class="ti-reload f-left"></i><span>{{grn_day.income| currency:"Rs. "}}</span></h2>
+                    <p class="m-b-0">No Of Bills<span class="f-right">{{grn_day.total_grn}}</span></p>
+                  </div>
+              </div>
+            </div>
+            <!-- order-card end -->
+
+      </div>
+      <!-- Revenue Chart -->
+      <div class="row">
+        <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+        <div id="styleSelector"> </div>
+
+      </div>
+<br><br>
+      <!-- Pie Chart -->
+      <div class="row">
+          <div id="chartContainer3" style="height: 370px; width: 50%;"></div>
+          <div id="styleSelector"> </div>
+        <div id="chartContainer2" style="height: 370px; width: 50%;"></div>
+        <div id="styleSelector"> </div>
+
+      </div>
+    <br><br>
+
+</div>
+  </div>
+</div>
+</div>
+</div>

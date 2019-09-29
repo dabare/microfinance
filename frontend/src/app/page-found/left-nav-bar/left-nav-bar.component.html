@@ -1,0 +1,249 @@
+<nav class="pcoded-navbar">
+  <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+  <div class="pcoded-inner-navbar main-menu">
+
+     <div class="pcoded-navigation-label"></div>
+
+    <ul class="pcoded-item pcoded-left-item">
+<!--      <li id="dashboard" class="active" (click)="clickLink('#dashboard')" title="Dashboard">-->
+<!--        <a [routerLink]="['./dashboard']">-->
+<!--          &lt;!&ndash; <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span> &ndash;&gt;-->
+<!--          &lt;!&ndash; <span class="pcoded-mtext"></span>-->
+<!--          <span class="pcoded-mcaret"></span> &ndash;&gt;-->
+<!--        </a>-->
+<!--      </li>-->
+
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" class="" id="dashboard" (click)="clickLink('#dashboard')" title="Dashboard">
+        <a [routerLink]="['./dashboard']">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+          <span class="pcoded-mtext">Home</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <div class="pcoded-navigation-label"></div>
+
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" class="" id="supplier" (click)="clickLink('#supplier')" title="Supplier Management">
+        <a [routerLink]="['./supplier']">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>D</b></span>
+          <span class="pcoded-mtext">Supplier</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+
+<!--      <li class="pcoded-hasmenu">-->
+<!--        <a href="javascript:void(0)">-->
+<!--          <span class="pcoded-micon"><i class="ti-user"></i><b>D</b></span>-->
+<!--          <span class="pcoded-mtext">Supplier</span>-->
+<!--          <span class="pcoded-mcaret"></span>-->
+<!--        </a>-->
+<!--        <ul class="pcoded-submenu">-->
+<!--          <li id="supplier" (click)="clickLink('#supplier')" title="Supplier Management">-->
+<!--            <a [routerLink]="['./supplier']">-->
+<!--              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>-->
+<!--              <span class="pcoded-mtext">Registration</span>-->
+<!--              <span class="pcoded-mcaret"></span>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </li>-->
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" class="pcoded-hasmenu">
+        <a href="javascript:void(0)">
+          <span class="pcoded-micon"><i class="ti-layout-list-post"></i><b>D</b></span>
+          <span class="pcoded-mtext">Purchase</span>
+          <!-- <span class="pcoded-badge label label-danger">**</span> -->
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul class="pcoded-submenu">
+          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" id="grn" (click)="clickLink('#grn')" title="Issue GRN">
+            <a [routerLink]="['./grn']">
+              <span class="pcoded-micon"><i class="ti-list"></i><b>D</b></span>
+              <span class="pcoded-mtext">GRN</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" id="grn-list" (click)="clickLink('#grn-list')" title="GRN List">
+            <a [routerLink]="['./grn-list']">
+              <span class="pcoded-micon"><i class="ti-list"></i><b>D</b></span>
+              <span class="pcoded-mtext">Purchase List</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <div class="pcoded-navigation-label"></div>
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" class="pcoded-hasmenu pcoded-trigger">
+        <a href="javascript:void(0)">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>D</b></span>
+          <span class="pcoded-mtext">Product</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" class="pcoded-submenu">
+          <li id="product" (click)="clickLink('#product')" title="Product Management">
+            <a [routerLink]="['./product']">
+              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+              <span class="pcoded-mtext">Product Registration</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" id="stock" (click)="clickLink('#stock')" title="Stock List">
+            <a [routerLink]="['./stock']">
+              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+              <span class="pcoded-mtext">Stock</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" id="discount" (click)="clickLink('#discount')" title="Discounts">
+            <a [routerLink]="['./discount']">
+              <span class="pcoded-micon"><i class="ti-gift"></i></span>
+              <span class="pcoded-mtext">Discount</span>
+              <!-- <span class="pcoded-badge label label-warning">hot</span> -->
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <!-- <li id="voucher" (click)="clickLink('#voucher')" title="Vouchers">
+            <a [routerLink]="['./voucher']">
+              <span class="pcoded-micon"></span>
+              <span class="pcoded-mtext">Voucher</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li> -->
+        </ul>
+      </li>
+       <div class="pcoded-navigation-label"></div>
+
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 1" id="invoice" (click)="clickLink('#invoice')" title="Issue Invoice">
+        <a [routerLink]="['./invoice']">
+          <span class="pcoded-micon"><i class="ti-credit-card"></i><b>A</b></span>
+          <span class="pcoded-mtext">Point Of Sales</span>
+
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 1" id="invoice-list" (click)="clickLink('#invoice-list')" title="Invoice List">
+        <a [routerLink]="['./invoice-list']">
+          <span class="pcoded-micon"><i class="ti-list"></i><b>A</b></span>
+          <span class="pcoded-mtext">Invoice List</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 1" id="customer" (click)="clickLink('#customer')" title="Customer Management">
+        <a [routerLink]="['./customer']">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>A</b></span>
+          <span class="pcoded-mtext">Customer</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+
+<!--      <li class="pcoded-hasmenu">-->
+<!--        <a href="javascript:void(0)">-->
+<!--          <span class="pcoded-micon"><i class="ti-user"></i><b>D</b></span>-->
+<!--          <span class="pcoded-mtext">Customer</span>-->
+<!--          <span class="pcoded-mcaret"></span>-->
+<!--        </a>-->
+<!--        <ul class="pcoded-submenu">-->
+<!--          <li id="customer" (click)="clickLink('#customer')" title="Customer Management">-->
+<!--            <a [routerLink]="['./customer']">-->
+<!--              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>-->
+<!--              <span class="pcoded-mtext">Registration</span>-->
+<!--              <span class="pcoded-mcaret"></span>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </li>-->
+      <div class="pcoded-navigation-label"></div>
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" class="pcoded-hasmenu">
+        <a href="javascript:void(0)">
+          <span class="pcoded-micon"><i class="ti-printer"></i><b>D</b></span>
+          <span class="pcoded-mtext">Reports</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul class="pcoded-submenu">
+          <li id="sales" (click)="clickLink('#sales')" title="Sales Report">
+            <a [routerLink]="['./sales']">
+              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+              <span class="pcoded-mtext">Sales</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li id="purchase-list" (click)="clickLink('#purchase-list')" title="Purchase List">
+            <a [routerLink]="['./purchase-list']">
+              <span class="pcoded-micon"><i class="ti-list"></i><b>D</b></span>
+              <span class="pcoded-mtext">Purchase</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+           <li id="dailysummary" (click)="clickLink('#dailysummary')" title="Daily Summary">
+            <a [routerLink]="['./dailysummary']">
+              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+              <span class="pcoded-mtext">Daily Summary</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li id="monthlysummary" (click)="clickLink('#monthlysummary')" title="Monthly Summary">
+            <a [routerLink]="['./monthlysummary']">
+              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+              <span class="pcoded-mtext">Monthly Summary</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <div class="pcoded-navigation-label"></div>
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" id="analytics" (click)="clickLink('#analytics')" title="Analytics">
+          <a [routerLink]="['./analytics']">
+            <span class="pcoded-micon"><i class="ti-bar-chart"></i><b>A</b></span>
+            <span class="pcoded-mtext">Analitics</span>
+            <span class="pcoded-mcaret"></span>
+          </a>
+        </li>
+        <div class="pcoded-navigation-label"></div>
+      <!-- <li id="stock-return" (click)="clickLink('#stock-return')" title="Stock Return">
+        <a [routerLink]="['./stock-return']">
+          <span class="pcoded-micon"><i class="ti-layout-list-post"></i><b>D</b></span>
+          <span class="pcoded-mtext">Stock return</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li> -->
+      <!-- <li id="sales-return" (click)="clickLink('#sales-return')" title="Sales Return">
+        <a [routerLink]="['./sales-return']">
+          <span class="pcoded-micon"><i class="ti-list"></i><b>D</b></span>
+          <span class="pcoded-mtext">Sales return</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li> -->
+    </ul>
+    <div class="pcoded-navigation-label">Settings</div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" id="users" (click)="clickLink('#users')" title="System User Management">
+        <a [routerLink]="['./users']">
+          <span class="pcoded-micon"><i class="fa fa-users-cog"></i><b>D</b></span>
+          <span class="pcoded-mtext">User Management</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li id="user" (click)="clickLink('#user')" title="System User Settings">
+        <a [routerLink]="['./user']">
+          <span class="pcoded-micon"><i class="fa fa-user-cog"></i><b>D</b></span>
+          <span class="pcoded-mtext">User Settings</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li *ngIf="getUserTypeId() == 13" id="settings" (click)="clickLink('#settings')" title="System Settings">
+        <a [routerLink]="['./system-settings']">
+          <span class="pcoded-micon"><i class="ti-settings"></i><b>D</b></span>
+          <span class="pcoded-mtext">System Settings</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+
+      <li *ngIf="getUserTypeId() == 13" id="testBarcode" (click)="clickLink('#testBarcode')" title="Test Barcode">
+        <a [routerLink]="['./barcode-pdf']">
+          <span class="pcoded-micon"><i class="ti-settings"></i><b>D</b></span>
+          <span class="pcoded-mtext">Test Barcode</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

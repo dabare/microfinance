@@ -1,0 +1,105 @@
+<style>
+  
+</style>
+<div class="">
+  <!--Removed pcoded-content class -->
+  <div class="">
+    <!-- Main-body start -->
+    <div class="main-body">
+      <div class="">
+        <!-- Page-header start -->
+        <div class="card">
+          <div class="card-block">
+
+            <!--             <h5 class="m-b-10">Supplier Management </h5>
+                    </div>
+                  </div> -->
+            <!-- Page-header end -->
+
+            <!-- Page body start -->
+            <div class="page-body">
+              <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                  <h5 class="m-b-10" style="text-align: center">Daily Summary Report </h5>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                  <table class="table table-xs table-framed">
+                    <thead>
+                      <th></th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="table-active" style="text-align: right">Gross Sales Amount </td>
+                        <td class="table-dark" style="text-align: right">{{dailySummary.grossSales| currency:" " }}</td>
+                      </tr>
+                      <tr>
+                        <td class="table-active" style="text-align: right">Overall Discounts</td>
+                        <td class="table-dark" style="text-align: right">{{dailySummary.overallDiscount| currency:" " }}
+                        </td>
+                      </tr>
+                      <tr *ngFor="let paymentTypeSale of paymentTypeSalesSet; let id = index">
+                        <td class="table-active" style="text-align: right">{{paymentTypeSale.type}} Sales Amount</td>
+                        <td class="table-dark" style="text-align: right">{{paymentTypeSale.total| currency:" " }}</td>
+                      </tr>
+                      <tr style="font-size: 22px; font-weight: bold;color: #4099ff">
+                          <td class="table-active" style="text-align: right">Net Amount</td>
+                          <td class="table-dark" style="text-align: right">{{dailySummary.netAmount| currency:" " }}
+                          </td>
+                        </tr>
+                       
+                      <tr style="font-size: 16px; font-weight: bold">
+                        <td colspan="2" class="table-active" style="text-align: center">Department Sales</td>
+
+                      </tr>
+                      <tr *ngFor="let genderSales of genderSalesSet; let id = index">
+                          <td class="table-active" style="text-align: right">{{genderSales.name}}</td>
+                          <td class="table-dark" style="text-align: center">{{genderSales.total| currency:" " }}</td>
+                        </tr>
+
+                       
+                      <tr>
+                        <td class="table-active" style="text-align: right">Number Of Sales Returns</td>
+                        <td class="table-dark" style="text-align: right">{{dailySummary.salesReturnsQty}}</td>
+                      </tr>
+                      <tr>
+                        <td class="table-active" style="text-align: right">Sales Return Amount</td>
+                        <td class="table-dark" style="text-align: right">{{dailySummary.salesRetrunsAmount| currency:" " }}</td>
+                      </tr>
+                      <tr style="font-size: 30px; font-weight: bold;color: #4099ff">
+                        <td class="table-active" style="text-align: right">Cash Balance</td>
+                        <td class="table-dark" style="text-align: right">{{dailySummary.cashBalance| currency:" " }}</td>
+                      </tr>
+
+                      <!-- <tr class="table-danger" style="background-color: #ff0000;color: white">
+                      <td style="background-color: #ff0000;color: white; text-align: right">Due Amount</td>
+                      <td style="background-color: #ff0000;color: white; text-align: center" colspan="3">
+                        {{invoice.total | currency:"Rs. "}}</td>
+                    </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-sm-3"></div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-3"></div>
+                <div class="col-sm-6 center" style="text-align: right">
+                    <button type="submit" class="btn btn-info" (click)="print()">Print
+              </button>
+                </div>
+                <div class="col-sm-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="styleSelector">
+
+    </div>
+  </div>
+</div>

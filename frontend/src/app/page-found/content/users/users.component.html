@@ -1,0 +1,219 @@
+
+<div class="">
+  <!--Removed pcoded-content class -->
+  <div class="pcoded-inner-content">
+    <!-- Main-body start -->
+    <div class="main-body">
+      <div class="card">
+        <div class="card-block">
+          <div class="page-body">
+            <div class="row">
+              <div class="col-sm-2">
+                <div class="input-group input-group-sm">
+                <span class="input-group-addon  ">
+                  <i class="icofont icofont-ui-search "></i></span>
+                  <input type="text" (keyup)="searchData()" [(ngModel)]="userDataTableSearch"
+                         class="form-control form-control-round" placeholder="Search here...">
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="input-group input-group-sm ">
+                  Show &nbsp;
+                  <select class="form-control" [(ngModel)]="userDataTableLength" (change)="setDatatableLength()">
+                    <option value=5>5</option>
+                    <option value=10>10</option>
+                    <option value=50>50</option>
+                    <option value=-1>All</option>
+                  </select>
+                  &nbsp; entries
+                </div>
+              </div>
+
+              <div class="col-sm-7">
+                <div class="pull-right input-group-sm ">
+                  <button style="padding: 10px;" class="btn btn-info" (click)="refreshUsers()">
+                    <i class="icofont icofont-refresh" aria-hidden="true"></i> Refresh
+                  </button>
+                  &nbsp;
+                  <button style="padding: 10px;" class="btn btn-success" (click)="clickNewUser()">
+                    <i class="icofont icofont-plus" aria-hidden="true"></i> New
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+
+                <div class="dt-responsive table-responsive">
+                  <table id="usersDataTable"
+                         class="table table-xs display compact table-striped table-bordered nowrap" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Username</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Created By</th>
+                      <th>Reg.</th>
+                      <td></td>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                      <th>#</th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Username</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Created By</th>
+                      <th>Reg.</th>
+                      <td></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="new_user" class="modal fade" role="dialog" style="z-index: 9999;">
+      <div class="modal-dialog modal-lg">
+
+         Modal content
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" *ngIf="actionMode=='new'">New User</h4>
+            <h4 class="modal-title" *ngIf="actionMode=='edit'">Edit User</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="card-block row">
+
+              <div class="col-sm-6">
+                <form class="j-pro">
+                  <div class="j-content">
+                    <!-- start name -->
+                    <div>
+                      <label class="j-label">Name</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-user"></i>
+                          </label>
+                          <input type="text" autocomplete="disabled" placeholder="User's Name"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="user.name">
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="j-label col-form-label">User Type</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="fa fa-user-shield"></i>
+                          </label>
+                          <select #userTypeSelect (change)="userTypeSelected(userTypeSelect.value)">
+                            <option value="-1" [selected]="-1 == user.user_type_id">Select User Type</option>
+                            <option *ngFor="let type of userTypes" [value]="type.id" [selected]="type.id == user.user_type_id">{{type.type}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <label class="j-label">Username</label>
+                      </div>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="fa fa-signature"></i>
+                          </label>
+                          <input type="email" class="form-control" autocomplete="disabled" placeholder="Login Username"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="user.username">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="j-response"></div>
+                  </div>
+                </form>
+              </div>
+              <div class="col-sm-6">
+                <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+                  <div class="j-content">
+                    <!-- start name -->
+                    <div>
+                      <label class="j-label col-form-label">Phone</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-touch-phone"></i>
+                          </label>
+                          <input type="text"
+                                 autocomplete="disabled" placeholder="Phone number"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="user.contactNo">
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <label class="j-label">Email</label>
+                      </div>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-envelope"></i>
+                          </label>
+                          <input type="email" class="form-control" autocomplete="disabled" placeholder="Email address"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="user.email">
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <label class="j-label">Registration Date</label>
+                      </div>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-calendar"></i>
+                          </label>
+                          <input type="text" autocomplete="disabled" disabled value="{{user.registered_date}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="j-response"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" (click)="clickRegisterUser()"
+                    *ngIf="actionMode=='new'">Register
+            </button>
+            <button type="submit" class="btn btn-success" (click)="clickUpdateUser()"
+                    *ngIf="actionMode=='edit'">Update
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div id="styleSelector">
+
+    </div>
+  </div>
+</div>

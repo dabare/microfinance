@@ -1,0 +1,534 @@
+<style>
+  .table td,
+  .table th {
+    border: 1px solid #ceced6;
+  }
+
+  .table-dark {
+    background-color: rgba(70, 58, 58, 0.495);
+    text-align: right;
+  }
+
+  .main-body .page-wrapper {
+    padding: 0px;
+  }
+
+  @media (min-width: 576px) {
+    .modal-dialog {
+      max-width: 728px;
+    }
+  }
+</style>
+<div class="">
+  <div class="pcoded-inner-content">
+    <!-- Main-body start -->
+    <div class="main-body">
+      <div class="page-wrapper">
+        <!-- Page-body start -->
+        <div class="page-body">
+          <div class="row">
+            <!-- <div class="col-sm-1"></div> -->
+            <div class="col-sm-12">
+
+              <!-- Register your self card start -->
+              <div class="card">
+                <!-- <div class="card-header">
+                  <h5>Purchase </h5>
+                  <span>Add New Purchase.</span>
+                </div> -->
+                <div class="card-block">
+                  <div class="row">
+
+                    <div class="col-sm-12">
+
+                      <div class="form-group row">
+                        <label class="col-sm-1 col-form-label" style="text-align: right;">Supplier</label>
+                        <div class="col-sm-2"> 
+                          <div class="input-group" style="margin-bottom: 0;">
+                            <select required (change)="setSupplier(supplier.id)" class="form-control" [(ngModel)]="supplier.id" [ngModelOptions]="{standalone: true}">
+                              <option value="-1" disabled> - Select Supplier</option>
+                              <option *ngFor="let supplier of suppliers; index as i" value="{{ supplier.id }}">
+                                {{ supplier.name }}
+                              </option>
+                            </select>
+                            <span data-toggle="modal" data-target="#new_supplier" class="input-group-addon"
+                              id="basic-addon5"><i class="icofont icofont-ui-add"></i></span>
+                          </div>
+                        </div>
+                        <label class="col-sm-1 col-form-label" style="text-align: right;">Invoice Date</label>
+                        <div class="col-sm-2">
+                            <input required type="date"  [ngModelOptions]="{standalone: true}" [(ngModel)]="grn.invoice_issueddate"  class="form-control" autocomplete="disabled" placeholder="Date of birth">
+                          <!-- <input type="text" class="form-control" placeholder="GRN no" value="2019-05-12"> -->
+                        </div>
+                        <label class="col-sm-1 col-form-label" style="text-align: right;">Ref. No</label>
+                        <div class="col-sm-2">
+                          <input required type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="grn.ref_no" placeholder="Invoice ref. no">
+                        </div>
+                        <label class="col-sm-1 col-form-label" style="text-align: right;">GRN. No</label>
+                        <div class="col-sm-2">
+                          <input required type="text" class="form-control" placeholder="GRN no" [ngModelOptions]="{standalone: true}" [(ngModel)]="grn.id" value="000145285" readonly>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+
+                        <label class="col-sm-1 col-form-label" style="text-align: right;">Product</label>
+                        <div class="col-sm-5">
+                          <div class="input-group input-group">
+                            <span class="input-group-addon" id="basic-addon6" style="background-color:#f3f3f3"><i
+                                class="icofont icofont-barcode" style="background-color: black;"></i></span>
+                                <select required (change)="AddRow(product.id)" class="form-control" [(ngModel)]="product.id" [ngModelOptions]="{standalone: true}">
+                                <option value="-1" disabled> - Select Product</option>
+                                  <option *ngFor="let product of products; index as i" value="{{ product.id }}">
+                                    {{ product.product_description }}
+                                  </option>
+                                </select>
+                            <span data-toggle="modal" data-target="#new_product" class="input-group-addon"
+                              id="basic-addon5"><i class="icofont icofont-ui-add"></i></span>
+                          </div>
+                        </div>
+                        <label class="col-sm-1 col-form-label" style="text-align: right;">Notes</label>
+                        <div class="col-sm-5">
+                          <textarea rows="3"  [ngModelOptions]="{standalone: true}" [(ngModel)]="product.notes" cols="5" class="form-control" placeholder="Notes"></textarea>
+                        </div>
+                      </div> 
+
+                    </div>
+                    <div class="col-sm-3"></div>
+                  </div>
+                  <div class="row">  
+                    <div class="col-sm-12"> 
+                      <table class="table table-xs table-framed">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Available</th>
+                            <th>Qty</th>
+                            <th>Cost</th>
+                            <th>Sell Price</th>
+                            <th>(%)</th> 
+                            <th style="text-align: right">Total &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody id="product_table">
+                            <tr *ngFor="let product1 of products_all; let id = index">
+                              <td scope="row"><input type="hidden" [ngModelOptions]="{standalone: true}" [(ngModel)]="products_all[id].id" class="form-control" placeholder="100">{{id+1}}</td>
+                              <td>{{product1.product_description}}</td>
+                              <td>{{product1.available_qty}}</td>
+                              <td><input onclick="this.select();" required type="number" min="1" [ngModelOptions]="{standalone: true}" (keyup)="calculateRowTotal(id)" [(ngModel)]="products_all[id].qty" class="form-control" placeholder="100"></td>
+                              <td> <input onclick="this.select();" required type="number" min="1" [ngModelOptions]="{standalone: true}" (keyup)="calculateRowTotal(id)" [(ngModel)]="products_all[id].buying_price" class="form-control" placeholder="850.00"></td>
+                              <td><input onclick="this.select();" required type="number" min="1" [ngModelOptions]="{standalone: true}" (keyup)="calculateSellingPercentage(id)" [(ngModel)]="products_all[id].selling_price" class="form-control" placeholder="1850.00"></td>
+                              <td>{{products_all[id].sellingPercentage | number:0}}% </td>
+                              <td><input t onclick="this.select();" required ype="text" style="text-align: right" [ngModelOptions]="{standalone: true}"  [(ngModel)]="products_all[id].total" class="form-control" placeholder="1850.00"></td>
+                              <td><span (click)="removeRow(id)" class="table-add float-right mb-3 mr-2"> <i style="color: red" class="icofont icofont-ui-delete" aria-hidden="true"></i> </span></td>
+                            </tr>
+                          <tr>
+                            <td class="table-active" colspan="6"></td>
+                            <td class="table-active" style="text-align: right">Sub Total</td>
+                            <td class="table-dark">{{product.subtotal| currency:"Rs. "}}</td>
+                            <td class="table-dark"></td>
+                          </tr>
+                          <tr>
+                            <td class="table-active" colspan="6"></td>
+                            <td class="table-active" style="text-align: right">Payment method</td>
+                            <td class="table-dark">
+                              <div class="input-group table-dark" style="margin-bottom: 0px">
+                                <select required (change)="setPaymentType(paymentType.id)" class="form-control" [(ngModel)]="paymentType.id" [ngModelOptions]="{standalone: true}">
+                                    <option value="-1" disabled> - Select Payment type</option>
+                                  <option *ngFor="let paymentType of paymentTypes; index as i" value="{{ paymentType.id }}">
+                                    {{ paymentType.type }}
+                                  </option>
+                                </select>
+                              </div>
+                            </td>
+                            <td class="table-dark"></td>
+                          </tr>
+                          <tr>
+                            <td class="table-active" colspan="6"></td>
+                            <td class="table-active" style="text-align: right">Discount</td>
+                            <td class="table-dark">
+                              <input  onclick="this.select();" style="text-align: right" (keyup)="calculateTotalPayable()" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.discount" type="text" class="form-control"
+                                placeholder="00.00"></td>
+                            <td class="table-dark"></td>
+                          </tr>
+                          <tr>
+                            <td class="table-active" colspan="6"></td>
+                            <td class="table-active" style="text-align: right">Total</td>
+                            <td class="table-dark">{{product.total| currency:"Rs. "}}</td>
+                            <td class="table-dark"></td>
+                          </tr> 
+                          <tr>
+                            <td class="table-active" colspan="6"></td>
+                            <td class="table-active" style="text-align: right">Paid Amount</td>
+                            <td class="table-dark">
+                              <input required onclick="this.select();" style="text-align: right"  (keyup)="calculateBalance()" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.paid_amount" type="text" class="form-control"
+                                placeholder="00.00"></td>
+                            <td class="table-dark"></td>
+                          </tr>
+                          <tr>
+                            <td class="table-active" colspan="6"></td>
+                            <td class="table-active" style="text-align: right">Balance</td>
+                            <td class="table-dark">{{product.balance| currency:"Rs. "}}</td>
+                            <td class="table-dark"></td>
+                          </tr>
+                          <tr class="table-danger" style="background-color: #ff0000;color: white">
+                            <td style="background-color: #ff0000;color: white" colspan="3"></td>
+                            <td style="background-color: #ff0000;color: white; text-align: right">Due Amount</td>
+                            <td style="background-color: #ff0000;color: white; text-align: center" colspan="3">{{product.due_amount| currency:"Rs. "}}
+                            </td>
+                            <td colspan="2" style="background-color: #ff0000;color: white"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" >Clear</button>
+                        <button type="submit" class="btn btn-success"  (click)="registerGRN()">Add</button>
+                        <button type="submit" class="btn btn-success"  (click)="print()">Print Test</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Supplier Modal -->
+          <div id="new_supplier" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">New Supplier</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="card-block">
+                    <div class="">
+                      <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+                        <div class="j-content">
+                          <div>
+                            <label class="j-label">Name</label>
+                            <div class="j-unit">
+                              <div class="j-input">
+                                <label class="j-icon-right" for="name">
+                                  <i class="icofont icofont-ui-user"></i>
+                                </label>
+                                <input type="text" id="name" name="name" value="{supplier.rating}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="supplier.name">
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label class="j-label">Mobile</label>
+                            <div class="j-unit">
+                              <div class="j-input">
+                                <label class="j-icon-right" for="name">
+                                  <i class="icofont icofont-ui-touch-phone"></i>
+                                </label>
+                                <input type="text"  maxlength="10" id="contactno1" name="contactno1" [ngModelOptions]="{standalone: true}" [(ngModel)]="supplier.contactNo1">
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label class="j-label">Office</label>
+                            <div class="j-unit">
+                              <div class="j-input">
+                                <label class="j-icon-right" for="name">
+                                  <i class="icofont icofont-ui-dial-phone"></i>
+                                </label>
+                                <input type="text" maxlength="10" id="contactno2" name="contactno2"  [ngModelOptions]="{standalone: true}" [(ngModel)]="supplier.contactNo2">
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label class="j-label">Address</label>
+                            <div class="j-unit">
+                              <div class="j-input">
+                                <label class="j-icon-right" for="name">
+                                  <i class="icofont icofont-address-book"></i>
+                                </label>
+                                <input type="text" id="contactno2" name="contactno2" [ngModelOptions]="{standalone: true}" [(ngModel)]="supplier.address">
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div>
+                              <label class="j-label">Email</label>
+                            </div>
+                            <div class="j-unit">
+                              <div class="j-input">
+                                <label class="j-icon-right" for="email">
+                                  <i class="icofont icofont-envelope"></i>
+                                </label>
+                                <input type="email" id="email" name="email" [ngModelOptions]="{standalone: true}" [(ngModel)]="supplier.email">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="j-response"></div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-success"  (click)="RegisterSupplier()">Register</button>
+                </div>
+              </div>
+
+            </div>
+          </div> 
+          <!-- Product Modal -->
+          <div id="new_product" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">New Product</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="card-block">
+                    <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+                      <div class="j-content">
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Brand</label>
+                          <div class="col-sm-4">
+                            <div class="input-group" style="margin-bottom: 0;">
+                              <select (change)="setBrandProductName(brand.id)"  class="form-control" [(ngModel)]="brand.id" [ngModelOptions]="{standalone: true}"> 
+                                <option value="-1" disabled> - Select Brand</option>
+                                <option *ngFor="let brand of brands; index as i" value="{{brand.id}}">
+                                  {{ brand.brand_name }}
+                                </option>
+                              </select>
+                              <span data-toggle="modal" data-target="#new_brand" class="input-group-addon"
+                              id="basic-addon5"><i class="icofont icofont-ui-add"></i></span>
+                              
+                            </div>
+                          </div>
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Size</label>
+                          <div class="col-sm-4">
+                            <div class="input-group" style="margin-bottom: 0;">
+                              <select class="form-control" [(ngModel)]="size.id" [ngModelOptions]="{standalone: true}">
+                                <option value="-1" disabled> - Select Size</option>
+                                <option *ngFor="let size of sizes; index as i" value="{{ size.id }}">
+                                  {{ size.size_name }}
+                                </option>
+                              </select> 
+                                  <span data-toggle="modal" data-target="#new_size" class="input-group-addon"
+                                  id="basic-addon5"><i class="icofont icofont-ui-add"></i></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Cloth</label>
+                          <div class="col-sm-4">
+                            <div class="input-group" style="margin-bottom: 0;">
+                              <select (change)="setClothProductName(cloth.id)" class="form-control" [(ngModel)]="cloth.id" [ngModelOptions]="{standalone: true}">
+                                <option value="-1" disabled> - Select Cloth</option>
+                                <option *ngFor="let cloth of cloths; index as i" value="{{ cloth.id }}">
+                                  {{ cloth.cloth_name }}
+                                </option>
+                              </select>
+                              <span data-toggle="modal" data-target="#new_cloth" class="input-group-addon"
+                              id="basic-addon5"><i class="icofont icofont-ui-add"></i></span> 
+                            </div>
+                          </div>
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Type</label>
+                          <div class="col-sm-4">
+                            <div class="input-group" style="margin-bottom: 0;">
+                              <select (change)="setTypeProductName()" class="form-control" [(ngModel)]="product.gender"
+                                [ngModelOptions]="{standalone: true}">
+                                <option value="-1" disabled> - Select Type</option>
+                                <option value="Men">Men</option>
+                                <option value="Women">Women</option>
+                                <option value="Kids">Kids</option>
+                                <option value="Unisex">Unisex</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Product</label>
+                          <div class="col-sm-10">
+                            <div class="input-group input-group">
+                              <span class="input-group-addon" id="basic-addon6" style="background-color:#f3f3f3"><i
+                                  class="icofont icofont-ui-tag" style="color: black;"></i></span>
+                              <input type="text"  class="form-control" placeholder="Product Description"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="product.product_description">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Notes</label>
+                          <div class="col-sm-10">
+                            <textarea rows="3" cols="5" class="form-control" placeholder="Notes"
+                              [ngModelOptions]="{standalone: true}" [(ngModel)]="product.notes"></textarea>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Status</label>
+                          <div class="col-sm-10">
+                            <div class="form-radio">
+                              <div class="radio radiofill radio-primary radio-inline">
+                                <label>
+                                  <input type="radio" name="radio" checked="checked" value="1"
+                                    [(ngModel)]="product.status" [ngModelOptions]="{standalone: true}">
+                                  <i class="helper"></i>Active
+                                </label>
+                              </div>
+                              <div class="radio radiofill radio-danger radio-inline">
+                                <label>
+                                  <input type="radio" name="radio" value="0" [(ngModel)]="product.status"
+                                    [ngModelOptions]="{standalone: true}">
+                                  <i class="helper"></i>Inactive
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Alert Qty</label>
+                          <div class="col-sm-4">
+                            <div class="input-group input-group">
+                              <input onclick="this.select();" type="number" min="1" class="form-control" placeholder="10"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="product.alert_qty">
+                            </div>
+                          </div>
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Available Qty</label>
+                          <div class="col-sm-4">
+                            <div class="input-group input-group">
+                              <input type="text" class="form-control" placeholder="0" disabled
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="product.available_qty">
+                            </div>
+                          </div>
+                        </div>
+
+
+
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> 
+                      <button type="submit" class="btn btn-success" (click)="RegisterProduct()"
+                      *ngIf="actionMode=='new'">Register
+                    </button>
+                  
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+          <!-- Brand Modal -->
+          <div id="new_brand" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">New Brand</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="card-block">
+                    <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+                      <div class="j-content">
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Brand</label>
+                          <div class="col-sm-10">
+                            <div class="input-group input-group">
+                              <input type="text" class="form-control" placeholder="Brand Name"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="brand.brand_name">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button class="btn btn-success" (click)="RegisterBrand()"> Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Size Modal -->
+          <div id="new_size" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">New Size</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="card-block">
+                    <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+                      <div class="j-content">
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Size</label>
+                          <div class="col-sm-10">
+                            <div class="input-group input-group">
+                              <input type="text" class="form-control" placeholder="Size"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="size.size_name">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button class="btn btn-success" (click)="RegisterSize()"> Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cloth Modal -->
+          <div id="new_cloth" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">New Cloth</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <div class="card-block">
+                    <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+                      <div class="j-content">
+                        <div class="form-group row">
+                          <label class="col-sm-2 col-form-label" style="text-align: right;">Cloth</label>
+                          <div class="col-sm-10">
+                            <div class="input-group input-group">
+                              <input type="text" class="form-control" placeholder="Cloth"
+                                [ngModelOptions]="{standalone: true}" [(ngModel)]="cloth.cloth_name">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button class="btn btn-success"><i class="icofont icofont-save"
+                      (click)="RegisterCloth()"></i>Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div id="styleSelector"> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

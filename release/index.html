@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory++</title>
+</head>
+<body>
+    <script>
+    window.location.replace("http://localhost:7777/");
+    var ngui = require('nw.gui');
+    const { exec } = require('child_process');
+    var nwin = ngui.Window.get();
+    nwin.enterKioskMode();
+    //nwin.showDevTools();
+    
+
+
+
+
+exec('server.exe', (err, stdout, stderr) => {
+  if (err) {
+    // node couldn't execute the command
+    return;
+  }
+
+  // the *entire* stdout and stderr (buffered)
+  console.log(`stdout: ${stdout}`);
+  console.log(`stderr: ${stderr}`);
+});
+
+exec('backend.exe', (err, stdout, stderr) => {
+  if (err) {
+    // node couldn't execute the command
+    return;
+  }
+
+  // the *entire* stdout and stderr (buffered)
+  console.log(`stdout: ${stdout}`);
+  console.log(`stderr: ${stderr}`);
+});
+
+    </script>
+</body>
+</html>

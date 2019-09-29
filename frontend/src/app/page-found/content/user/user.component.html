@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-6">
+    <div class="card">
+      <div class="card-header">
+        <h5>Edit Details</h5>
+      </div>
+      <div class="card-block">
+        <form>
+          <div class="row">
+            <label class="col-sm-3 col-form-label">Username</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="icofont icofont-ui-user"></i></span>
+                <input type="text" class="form-control" disabled placeholder="User's Name" value="{{loginService.getUser().uname}}" title="You cannot change username. Please contact system admin">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-sm-3 col-form-label">Name</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="icofont icofont-ui-note"></i></span>
+                <input type="text" class="form-control" placeholder="User's Name" [ngModelOptions]="{standalone: true}" [(ngModel)]="name">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-sm-3 col-form-label">Phone</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="icofont icofont-ui-cell-phone"></i></span>
+                <input type="text" class="form-control" placeholder="User's Phone Number" [ngModelOptions]="{standalone: true}" [(ngModel)]="contactNo">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-sm-3 col-form-label">Email</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="icofont icofont-ui-email"></i></span>
+                <input type="text" class="form-control" placeholder="User's Email" [ngModelOptions]="{standalone: true}" [(ngModel)]="email">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-success fa-pull-right" [hidden]="!(email && contactNo && name)" (click)="clickSave()">Update</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="card">
+    <div class="card-header">
+      <h5>Change Password</h5>
+    </div>
+    <div class="card-block">
+      <form>
+        <div class="row">
+          <label class="col-sm-3 col-form-label">Password</label>
+          <div class="col-sm-9">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="icofont icofont-ui-password"></i></span>
+              <input disabled class="form-control" value="********">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-warning fa-pull-right" [hidden]="!(email && contactNo && name)" (click)="clickChangePassword()">Change</button>
+    </div>
+  </div>
+  </div>
+</div>
+

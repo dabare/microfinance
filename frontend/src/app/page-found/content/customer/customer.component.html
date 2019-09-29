@@ -1,0 +1,214 @@
+
+<div class="">
+  <!--Removed pcoded-content class -->
+  <div class="pcoded-inner-content">
+    <!-- Main-body start -->
+    <div class="main-body">
+      <div class="card">
+        <div class="card-block">
+        <div class="page-body">
+          <div class="row">
+            <div class="col-sm-2">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon  ">
+                  <i class="icofont icofont-ui-search "></i></span>
+                <input type="text" (keyup)="searchData()" [(ngModel)]="customerDataTableSearch"
+                       class="form-control form-control-round" placeholder="Search here...">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group input-group-sm ">
+                Show &nbsp;
+                <select class="form-control" [(ngModel)]="customerDataTableLength" (change)="setDatatableLength()">
+                  <option value=5>5</option>
+                  <option value=10>10</option>
+                  <option value=50>50</option>
+                  <option value=-1>All</option>
+                </select>
+                &nbsp; entries
+              </div>
+            </div>
+
+            <div class="col-sm-7">
+              <div class="pull-right input-group-sm ">
+                <button style="padding: 10px;" class="btn btn-info" (click)="refreshCustomers()">
+                  <i class="icofont icofont-refresh" aria-hidden="true"></i> Refresh
+                </button>
+                &nbsp;
+                <button style="padding: 10px;" class="btn btn-success" (click)="clickNewCustomer()">
+                  <i class="icofont icofont-plus" aria-hidden="true"></i> New
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+
+              <div class="dt-responsive table-responsive">
+                <table id="customersDataTable"
+                       class="table table-xs display compact table-striped table-bordered nowrap" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>NIC</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Rep.</th>
+                    <th>Reg.</th>
+                    <td></td>
+                  </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tfoot>
+                  <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>NIC</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Rep.</th>
+                    <th>Reg.</th>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="new_Customer" class="modal fade" role="dialog" style="z-index: 9999;">
+      <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" *ngIf="actionMode=='new'">New Member</h4>
+            <h4 class="modal-title" *ngIf="actionMode=='edit'">Edit Member - {{customer.code}}</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="card-block row">
+
+              <div class="col-sm-6">
+                <form class="j-pro">
+                  <div class="j-content">
+                    <!-- start name -->
+                    <div>
+                      <label class="j-label">Name</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-user"></i>
+                          </label>
+                          <input type="text" autocomplete="disabled" placeholder="Member Name"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="customer.name">
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="j-label col-form-label">NIC</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-touch-phone"></i>
+                          </label>
+                          <input type="text"
+                                 autocomplete="disabled" placeholder="Member NIC"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="customer.nic">
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="j-label">Phone</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-dial-phone"></i>
+                          </label>
+                          <input type="text"
+                                autocomplete="disabled" placeholder="Phone number"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="customer.tel">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="j-response"></div>
+                  </div>
+                </form>
+              </div>
+              <div class="col-sm-6">
+                <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+
+                  <div class="j-content">
+                    <div>
+                      <label class="j-label">Email</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-address-book"></i>
+                          </label>
+                          <input type="text" autocomplete="disabled" placeholder="Email"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="customer.email">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="j-label">Member Type</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-calendar"></i>
+                          </label>
+                          <input type="date" class="form-control" autocomplete="disabled" placeholder="Date of birth"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="customer.dob">
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="j-label">Representative</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-star-shape"></i>
+                          </label>
+                          <input type="text" class="form-control autonumber" data-v-min="0" autocomplete="disabled"
+                                 placeholder="Representative" [ngModelOptions]="{standalone: true}"
+                                 [(ngModel)]="customer.representative">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="j-response"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" (click)="clickRegisterCustomer()"
+                    *ngIf="actionMode=='new'">Register
+            </button>
+            <button type="submit" class="btn btn-success" (click)="clickUpdateCustomer()"
+                    *ngIf="actionMode=='edit'">Update
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div id="styleSelector">
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="col-7">
+    <div class="card">
+      <div class="card-header">
+        <h5>System Variables</h5>
+      </div>
+      <div class="card-block">
+        <form>
+          <div class="row">
+            <label class="col-sm-8 col-form-label">Customer loyalty points per invoice amount</label>
+            <div class="col-sm-4">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-percentage"></i></span>
+                <input style="text-align: right;" type="number" class="form-control" placeholder="Customer Loyalty Points Percentage" [ngModelOptions]="{standalone: true}" [(ngModel)]="email">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-8 col-form-label">Supplier rating per invoice item</label>
+            <div class="col-sm-4">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-percentage"></i></span>
+                <input style="text-align: right;" type="number" class="form-control" placeholder="Customer Loyalty Points Percentage" [ngModelOptions]="{standalone: true}" [(ngModel)]="email">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-sm-8 col-form-label">Product rating per invoice item</label>
+            <div class="col-sm-4">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-percentage"></i></span>
+                <input style="text-align: right;" type="number" class="form-control" placeholder="Customer Loyalty Points Percentage" [ngModelOptions]="{standalone: true}" [(ngModel)]="email">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-success fa-pull-right" [hidden]="!(email && contactNo && name)">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
