@@ -50,6 +50,7 @@ import { AnalyticsComponent } from './page-found/content/analytics/analytics.com
 import {SystemSettingsComponent} from "./page-found/content/system-settings/system-settings.component";
 import {ErrorInterceptor} from "./error.interceptor";
 import {ResponseInterceptor} from "./response.interceptor";
+import {LoanPlanComponent} from "./page-found/content/loan-plan/loan-plan.component";
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import {ResponseInterceptor} from "./response.interceptor";
     MonthlySummaryComponent,
     UsersComponent,
     AnalyticsComponent,
-    SystemSettingsComponent
+    SystemSettingsComponent,
+    LoanPlanComponent
   ],
   imports: [
     BrowserModule,

@@ -227,10 +227,10 @@ type User struct {
 
 func checkUser(username string, password string) (User, string, error) {
 	log.Println("checkUser")
-	log.Println("username:"+username+" password:"+password)
+	log.Println("username:" + username + " password:" + password)
 	// You can also get a single result, a la QueryRow
 	user := User{}
-	err := db.Get(&user, "SELECT id, uname, pass, db FROM "+userDB+".user WHERE uname=? AND pass=?",username,password)
+	err := db.Get(&user, "SELECT id, uname, pass, db FROM "+userDB+".user WHERE uname=? AND pass=?", username, password)
 
 	if err != nil {
 		log.Println(err)
@@ -242,7 +242,7 @@ func checkUser(username string, password string) (User, string, error) {
 		return user, "", errors.New("INVALID CREDENTIALS")
 	}
 
-	res, resErr := selectQuery(userDB,"user","id = '"+user.Id+"'","","")
+	res, resErr := selectQuery(userDB, "user", "id = '"+user.Id+"'", "", "")
 	return user, res, resErr
 }
 
@@ -254,11 +254,11 @@ func query(w http.ResponseWriter, r *http.Request, query string) {
 		return
 	}
 
-	user , status := checkJWT(w, r)
+	user, status := checkJWT(w, r)
 
 	query = strings.Replace(query, userDbReplaceStr, user.Schema, -1)
 
-	if status != http.StatusOK{
+	if status != http.StatusOK {
 		log.Println("AUTHENTICATION FAILED")
 		http.Error(w, `{ "error":"AUTHENTICATION FAILED"}`, http.StatusUnauthorized)
 		return
@@ -296,11 +296,11 @@ func execute(w http.ResponseWriter, r *http.Request, query string) {
 		return
 	}
 
-	user , status := checkJWT(w, r)
+	user, status := checkJWT(w, r)
 
 	query = strings.Replace(query, userDbReplaceStr, user.Schema, -1)
 
-	if status != http.StatusOK{
+	if status != http.StatusOK {
 		log.Println("AUTHENTICATION ERROR")
 		http.Error(w, `{ "error":"AUTHENTICATION ERROR"}`, http.StatusUnauthorized)
 		return
@@ -312,6 +312,8 @@ func execute(w http.ResponseWriter, r *http.Request, query string) {
 		http.Error(w, `{ "error":"`+strings.ToUpper(err.Error())+`"}`, http.StatusInternalServerError)
 		return
 	}
+
+	log.Println("Query: " + query)
 
 	res, err := db.NamedExec(query, jsonObj)
 	if err != nil {

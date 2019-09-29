@@ -33,7 +33,7 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     tel: '-',
     address: '-',
     email: '-',
-    representative: '-',
+    representative: '-1',
     bondsman: '-',
     bondsman_nic: '-',
     status: 0,
@@ -83,6 +83,13 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     for (let index = 0; index < array.length; index++) {
       array[index].index = index;
     }
+  }
+
+  getCustomerCode(id) {
+    while (id.length < 3) {
+      id = '0' + id;
+    }
+    return 'MEM' + id;
   }
 
   clickEditCustomer(i) {
@@ -168,7 +175,7 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     this.customer.tel = '';
     this.customer.address = '';
     this.customer.email = '';
-    this.customer.representative = '';
+    this.customer.representative = '-1';
     this.customer.bondsman = '';
     this.customer.bondsman_nic = '';
     this.customer.status = 0;
@@ -194,6 +201,22 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     this.customerDataTableSearch = '';
     this.getAllCustomers();
     this.searchData();
+  }
+
+  internalCustomerClicked() {
+    this.customer.representative = '-1';
+  }
+
+  externalCustomerClicked() {
+    this.customer.representative = this.customers[0].id + '';
+  }
+
+  findCustomerById(id) {
+    return  this.customers.find((x) => x.id === (id + ''));
+  }
+
+  getInternalCustomers() {
+    return this.customers.filter((x) => x.representative === '-1' && (x.id !== this.customer.id + ''));
   }
 
   /////////////////////////////////////////////////////////////// datatable related code begin
@@ -303,8 +326,14 @@ export class CustomerComponent implements OnInit, AfterViewInit {
         '<button class="btn btn-mini btn-warning editCustomer" > <i class="icofont icofont-edit-alt" aria-hidden="true"></i></button> ' +
         '<button class="btn btn-mini btn-danger deleteCustomer"> <i class="icofont icofont-ui-delete" aria-hidden="true"></i></button>';
 
-      this.customerDataTable.row.add([cus.index, cus.code, cus.name, cus.nic,
-        cus.tel, cus.email, cus.representative, cus.req_date, action]);
+      let rep = 'FEC Member';
+      if (cus.representative !== '-1') {
+          rep = this.findCustomerById(cus.representative) ? this.getCustomerCode(this.findCustomerById(cus.representative).id) :
+            'DELETED USER';
+      }
+      this.customerDataTable.row.add([cus.index, this.getCustomerCode(cus.id), cus.name, cus.nic,
+        cus.tel, cus.email, rep, cus.req_date, action]);
+
     }
     this.customerDataTable.draw();
   }

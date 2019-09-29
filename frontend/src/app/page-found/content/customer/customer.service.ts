@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from 'src/environments/environment.prod';
-import {MiddlewareService} from '../../../middleware.service';
+import {LoginService} from '../../../login/login.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import {MiddlewareService} from '../../../middleware.service';
 
 export class CustomerService {
 
-  constructor(private httpClient: HttpClient, private middlewareService: MiddlewareService) {
+  constructor(private httpClient: HttpClient, private loginService: LoginService) {
   }
 
   getAllCustomers() {
@@ -17,10 +17,12 @@ export class CustomerService {
   }
 
   insertCustomer(customer: any) {
+    customer.req_user = this.loginService.getUser().id;
     return this.httpClient.post(environment.apiUrl + '/insertMember', customer);
   }
 
   updateCustomer(customer: any) {
+    customer.req_user = this.loginService.getUser().id;
     return this.httpClient.post(environment.apiUrl + '/updateMember', customer);
   }
 

@@ -28,13 +28,15 @@ export class LoginService {
 
   public login(username, password) {
     this.loginEndpoint(username, password).subscribe((data: any) => {
-      if (data.user.length > 0 &&  data.user[0].uname === username && data.user[0].pass === password ) {
+        if (data.user.length > 0 && data.user[0].uname === username && data.user[0].pass === password) {
           localStorage.setItem('oidfjntid', JSON.stringify(data));
           this.notifi.info('Login success');
           this.routeToDefault();
         }
       }, (err) => {
-      this.notifi.info('Invalid Credentials');
+        if (err.toString() !== 'Unknown Error') {
+          this.notifi.info('Invalid Credentials');
+        }
       }
     );
   }

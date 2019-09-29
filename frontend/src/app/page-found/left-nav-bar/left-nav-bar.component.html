@@ -127,10 +127,17 @@
         </a>
       </li>
 
-      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 1" id="customer" (click)="clickLink('#customer')" title="Customer Management">
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 1" id="member" (click)="clickLink('#member')" title="Member Management">
         <a [routerLink]="['./customer']">
           <span class="pcoded-micon"><i class="ti-user"></i><b>A</b></span>
-          <span class="pcoded-mtext">Customer</span>
+          <span class="pcoded-mtext">Members</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 1" id="loan-plans" (click)="clickLink('#loan-plans')" title="Loan Plans">
+        <a [routerLink]="['./loan-plans']">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>A</b></span>
+          <span class="pcoded-mtext">Loan Plans</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
