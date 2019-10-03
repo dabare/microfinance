@@ -28,7 +28,8 @@ import { StockComponent } from './page-found/content/stock/stock.component';
 import {UsersComponent} from './page-found/content/users/users.component';
 import { AnalyticsComponent } from './page-found/content/analytics/analytics.component';
 import {SystemSettingsComponent} from './page-found/content/system-settings/system-settings.component';
-import {LoanPlanComponent} from "./page-found/content/loan-plan/loan-plan.component";
+import {LoanPlanComponent} from './page-found/content/loan-plan/loan-plan.component';
+import {LoansComponent} from './page-found/content/loans/loans.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -62,6 +63,7 @@ const routes: Routes = [
       {path: 'analytics', component: AnalyticsComponent, canActivate: [AuthGuard] , data: { roles: ['13', '3'] }},
       {path: 'system-settings', component: SystemSettingsComponent, canActivate: [AuthGuard] , data: { roles: ['13'] }},
       {path: 'loan-plans', component: LoanPlanComponent, canActivate: [AuthGuard] , data: { roles: ['13'] }},
+      {path: 'loans', component: LoansComponent, canActivate: [AuthGuard] , data: { roles: ['13'] }},
     ]
   },
 

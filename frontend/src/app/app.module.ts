@@ -51,6 +51,7 @@ import {SystemSettingsComponent} from "./page-found/content/system-settings/syst
 import {ErrorInterceptor} from "./error.interceptor";
 import {ResponseInterceptor} from "./response.interceptor";
 import {LoanPlanComponent} from "./page-found/content/loan-plan/loan-plan.component";
+import {LoansComponent} from "./page-found/content/loans/loans.component";
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import {LoanPlanComponent} from "./page-found/content/loan-plan/loan-plan.compon
     UsersComponent,
     AnalyticsComponent,
     SystemSettingsComponent,
-    LoanPlanComponent
+    LoanPlanComponent,
+    LoansComponent
   ],
   imports: [
     BrowserModule,

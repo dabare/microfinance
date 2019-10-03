@@ -13,7 +13,7 @@ func initMember(router *mux.Router) {
 }
 
 func viewAllMembers(w http.ResponseWriter, r *http.Request) {
-	query(w, r, `SELECT *, date_format(dob,'%m-%d-%Y') AS dob, date_format(req_date,'%m-%d-%Y') AS req_date FROM `+userDbReplaceStr+`.member WHERE status = 1`)
+	query(w, r, `SELECT m.*, date_format(m.dob,'%Y-%m-%d') AS dob, date_format(m.req_date,'%Y-%m-%d') AS req_date, u.name AS updated_by FROM `+userDbReplaceStr+`.member AS m LEFT JOIN `+userDB+`.user AS u ON m.req_user=u.id WHERE m.status = 1`)
 }
 
 func insertMember(w http.ResponseWriter, r *http.Request) {

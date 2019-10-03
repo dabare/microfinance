@@ -41,6 +41,21 @@ export class LoginService {
     );
   }
 
+  private autoLogin() {
+    this.loginEndpoint(this.getUser().uname, this.getUser().pass).subscribe((data: any) => {
+        if (data.user.length > 0 && data.user[0].uname === this.getUser().uname && data.user[0].pass === this.getUser().pass) {
+          localStorage.setItem('oidfjntid', JSON.stringify(data));
+          this.notifi.info('Session Refreshed');
+          this.routeToDefault();
+        }
+      }, (err) => {
+        if (err.toString() !== 'Unknown Error') {
+          this.notifi.info('Autologin Failed');
+        }
+      }
+    );
+  }
+
   public logout() {
     localStorage.removeItem('oidfjntid');
     this.router.navigate(['login']);
@@ -82,6 +97,7 @@ export class LoginService {
   public refreshToken() {
     if (this.isTokenValid() && (this.getTokenValidTime() < 60 * 10)) {
       this.notifi.info('Your session is about to expire. Trying to revalidate...');
+      this.autoLogin();
     } else if (!this.isTokenValid()) {
       // this.tokenExpiredRedirectToLogin();
     }

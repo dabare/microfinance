@@ -14,6 +14,8 @@ func main() {
 	initLogin(router)
 	initUser(router)
 	initMember(router)
+	initMemberLoanPlan(router)
+	initMemberLoan(router)
 
 	log.Println("Running server on port" + port)
 	log.Fatal(http.ListenAndServe(port, router))

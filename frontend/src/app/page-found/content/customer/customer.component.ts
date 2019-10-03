@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {CustomerService} from './customer.service';
 import {NotificationsService} from '../../../utils/notifications';
 import Swal from 'sweetalert2';
+import {ActivatedRoute} from '@angular/router';
 
 declare var $: any;
 declare var jQuery: any;
@@ -41,11 +42,16 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     req_user: '-1'
   };
 
-  constructor(private customerService: CustomerService, private notifi: NotificationsService) {
+  constructor(private route: ActivatedRoute, private customerService: CustomerService, private notifi: NotificationsService) {
   }
 
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params && params.code) {
+        this.customerDataTableSearch = params.code;
+      }
+      });
     this.clearCustomer();
   }
 
@@ -100,8 +106,9 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     this.customer.code = this.customers[i].code;
     this.customer.name = this.customers[i].name;
     this.customer.nic = this.customers[i].nic;
-    this.customer.dob = this.customers[i].dob.split('-')[2] + '-' + this.customers[i].dob.split('-')[0] + '-' +
-      this.customers[i].dob.split('-')[1]; // yyyy-mm-dd
+    // this.customer.dob = this.customers[i].dob.split('-')[2] + '-' + this.customers[i].dob.split('-')[0] + '-' +
+    //   this.customers[i].dob.split('-')[1]; // yyyy-mm-dd
+    this.customer.dob = this.customers[i].dob;
     this.customer.tel = this.customers[i].tel;
     this.customer.address = this.customers[i].address;
     this.customer.email = this.customers[i].email;
@@ -109,7 +116,8 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     this.customer.bondsman = this.customers[i].bondsman;
     this.customer.bondsman_nic = this.customers[i].bondsman_nic;
     this.customer.status = this.customers[i].status;
-    this.customer.req_date = this.customers[i].req_date.replace(/-/g, '/');
+    this.customer.req_date = this.customers[i].req_date;
+    // this.customer.req_date = this.customers[i].req_date.replace(/-/g, '/');
     this.customer.req_user = this.customers[i].req_user;
 
     $('#new_Customer').modal({backdrop: 'static', keyboard: false});
@@ -265,11 +273,17 @@ export class CustomerComponent implements OnInit, AfterViewInit {
             targets: [0, 8]
           },
           {
+            searchable: false,
+            sortable: true,
+            targets: [6]
+          },
+          {
             visible: false,
             targets: [0]
           }],
         order: [[0, 'asc']],
       });
+      this.searchData();
     }
   }
 
@@ -332,7 +346,7 @@ export class CustomerComponent implements OnInit, AfterViewInit {
             'DELETED USER';
       }
       this.customerDataTable.row.add([cus.index, this.getCustomerCode(cus.id), cus.name, cus.nic,
-        cus.tel, cus.email, rep, cus.req_date, action]);
+        cus.tel, cus.email, rep, cus.req_date, cus.updated_by, action]);
 
     }
     this.customerDataTable.draw();

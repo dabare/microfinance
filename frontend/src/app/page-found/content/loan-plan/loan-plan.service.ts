@@ -12,21 +12,21 @@ export class LoanPlanService {
   constructor(private httpClient: HttpClient, private loginService: LoginService) {
   }
 
-  getAllCustomers() {
-    return this.httpClient.post(environment.apiUrl + '/viewAllMembers', {});
+  getAllMemberLoanPlans() {
+    return this.httpClient.post(environment.apiUrl + '/getAllMemberLoanPlans', {});
   }
 
-  insertCustomer(customer: any) {
-    customer.req_user = this.loginService.getUser().id;
-    return this.httpClient.post(environment.apiUrl + '/insertMember', customer);
+  insertMemberLoanPlan(data: any) {
+    data.req_user = this.loginService.getUser().id;
+    return this.httpClient.post(environment.apiUrl + '/insertMemberLoanPlan', data);
   }
 
-  updateCustomer(customer: any) {
-    customer.req_user = this.loginService.getUser().id;
-    return this.httpClient.post(environment.apiUrl + '/updateMember', customer);
+  updateMemberLoanPlan(data: any) {
+    data.req_user = this.loginService.getUser().id;
+    return this.httpClient.post(environment.apiUrl + '/updateMemberLoanPlan', data);
   }
 
-  deleteCustomer(customer: any) {
-    return this.httpClient.post(environment.apiUrl + '/deleteMember', customer);
+  deleteMemberLoanPlan(data: any) {
+    return this.httpClient.post(environment.apiUrl + '/deleteMemberLoanPlan', data);
   }
 }
