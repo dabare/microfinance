@@ -29,4 +29,8 @@ export class LoansService {
   deleteMemberLoan(data: any) {
     return this.httpClient.post(environment.apiUrl + '/deleteMemberLoan', data);
   }
+
+  getAllCustomers() {
+    return this.httpClient.post(environment.apiUrl + '/viewAllMembers', {});
+  }
 }

@@ -225,6 +225,33 @@ type User struct {
 	Schema   string `db:"db"`
 }
 
+func getUserDetails(database, table, where, group, order string) (string, error) {
+	log.Println("selectQuery")
+	initDB()
+
+	if group != "" {
+		group = " GROUP BY " + group
+	}
+
+	if order != "" {
+		order = " ORDER BY " + order
+	}
+
+	if where != "" {
+		where = " WHERE " + where
+	}
+
+	qry := "select id, name, email, contactNo, uname, pass, privilege_id from " + database + "." + table + " " + where + " " + group + " " + order
+	log.Println(qry)
+	rows, err := db.Queryx(qry)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	defer rows.Close()
+	return MyJsonify(rows)
+}
+
 func checkUser(username string, password string) (User, string, error) {
 	log.Println("checkUser")
 	log.Println("username:" + username + " password:" + password)
@@ -242,7 +269,7 @@ func checkUser(username string, password string) (User, string, error) {
 		return user, "", errors.New("INVALID CREDENTIALS")
 	}
 
-	res, resErr := selectQuery(userDB, "user", "id = '"+user.Id+"'", "", "")
+	res, resErr := getUserDetails(userDB, "user", "id = '"+user.Id+"'", "", "")
 	return user, res, resErr
 }
 

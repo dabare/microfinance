@@ -186,7 +186,7 @@
                           <label class="j-icon-right">
                             <i class="icofont icofont-ui-user"></i>
                           </label>
-                          <select [(ngModel)]="customer.representative" name="select" class="form-control">
+                          <select [disabled]="actionMode=='edit'" [(ngModel)]="customer.representative" name="select" class="form-control">
                             <option *ngFor="let cus of getInternalCustomers()" [ngValue]="cus.id">{{getCustomerCode(cus.id) + ' - ' + cus.name}}</option>
                           </select>
                         </div>

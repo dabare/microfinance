@@ -1,27 +1,27 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {NotificationsService} from '../../../utils/notifications';
 import Swal from 'sweetalert2';
-import {LoansService} from './loans.service';
+import {SavingRateService} from './saving-rate.service';
 
 declare var $: any;
 declare var jQuery: any;
 
 @Component({
   selector: 'app-tables',
-  templateUrl: './loans.component.html',
-  styleUrls: ['./loans.component.scss']
+  templateUrl: './saving-rate.component.html',
+  styleUrls: ['./saving-rate.component.scss']
 })
-export class LoansComponent implements OnInit, AfterViewInit {
+export class SavingRateComponent implements OnInit, AfterViewInit {
 
-  loanStatus = {
-    0: 'Cancelled',
+  status = {
+    0: 'Deleted',
     1: 'Active',
-    2: 'Completed'
+    4: 'Cancelled'
   };
 
-  loansDataTableLength = 5;
-  loansDataTableSearch = '';
-  loansDataTable: any;
+  savingsRateDataTableLength = 5;
+  savingsRateDataTableSearch = '';
+  savingsRateDataTable: any;
 
   actionMode = '';
 
@@ -29,27 +29,15 @@ export class LoansComponent implements OnInit, AfterViewInit {
 
   loan = {
     id: -1,
-    code: '-',
-    member_id: '',
-    member_loan_plan_id: '-1',
+    description: '-',
     rate: '1',
-    amount: '0.0',
-    charges: '0.0',
-    duration_months: 0,
-    grace_period_days: 0,
-    late_payment_charge: '0.0',
-    reject_cheque_penalty: '0.0',
     status: '1',
-    note: '',
     req_date: '',
     user_set_req_date: null,
-    req_user: '-1',
-    updated_by: ''
+    req_user: '-1'
   };
 
-  customers: any[] = [];
-
-  constructor(private loansService: LoansService, private notifi: NotificationsService) {
+  constructor(private loansService: SavingRateService, private notifi: NotificationsService) {
   }
 
 
@@ -60,7 +48,6 @@ export class LoansComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.initDataTable();
     this.getAllLoans();
-    this.getAllCustomers();
   }
 
   clickNewLoan() {
@@ -71,17 +58,13 @@ export class LoansComponent implements OnInit, AfterViewInit {
 
   clickRegisterLoan() {
     this.loan.req_date = this.loan.user_set_req_date.year + '-' + this.loan.user_set_req_date.month + '-' + this.loan.user_set_req_date.day;
-    this.loan.amount = (Number(this.loan.amount) * 100) + '';
-    this.loan.charges = (Number(this.loan.charges) * 100) + '';
-    this.loan.late_payment_charge = (Number(this.loan.late_payment_charge) * 100) + '';
-    this.loan.reject_cheque_penalty = (Number(this.loan.reject_cheque_penalty) * 100) + '';
 
-    this.loansService.insertMemberLoan(this.loan).subscribe((data: any) => {
+    this.loansService.insertMemberSavingRate(this.loan).subscribe((data: any) => {
         this.getAllLoans();
-        this.notifi.success('Loan inserted');
+        this.notifi.success('Savings Rate saved');
         $('#new_Loan').modal('hide');
       }, (err) => {
-        this.notifi.error('While inserting Loan');
+        this.notifi.error('While inserting Savings Rate');
       }
     );
   }
@@ -92,69 +75,32 @@ export class LoansComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getCustomerCode(id) {
-    while (id.length < 3) {
-      id = '0' + id;
-    }
-    return 'MEM' + id;
-  }
-
-  getLoanCode(id) {
-    while (id.length < 4) {
-      id = '0' + id;
-    }
-    return 'LOAN' + id;
-  }
-
-  cents2rupees(cents) {
-    const rupees = Math.floor(cents / 100);
-    cents = cents % 100 + '';
-    while (cents.length < 2) {
-      cents = '0' + cents;
-    }
-    return rupees + '.' + cents;
-  }
-
   clickEditLoan(i) {
     this.actionMode = 'edit';
     this.clearLoan();
 
     this.loan.id = this.loans[i].id;
-    this.loan.code = this.loans[i].code;
-    this.loan.member_id = this.loans[i].member_id;
-    this.loan.member_loan_plan_id = this.loans[i].member_loan_plan_id;
     this.loan.rate = this.loans[i].rate;
-    this.loan.amount = this.cents2rupees(Number(this.loans[i].amount));
-    this.loan.charges = this.cents2rupees(Number(this.loans[i].charges));
-    this.loan.duration_months = this.loans[i].duration_months;
-    this.loan.grace_period_days = this.loans[i].grace_period_days;
-    this.loan.late_payment_charge = this.cents2rupees(Number(this.loans[i].late_payment_charge));
-    this.loan.reject_cheque_penalty = this.cents2rupees(Number(this.loans[i].reject_cheque_penalty));
     this.loan.status = this.loans[i].status;
-    this.loan.note = this.loans[i].note;
+    this.loan.description = this.loans[i].description;
     this.loan.req_date = this.loans[i].req_date;
     this.loan.user_set_req_date.day = Number(this.loans[i].req_date.split('-')[2]);
     this.loan.user_set_req_date.month = Number(this.loans[i].req_date.split('-')[1]);
     this.loan.user_set_req_date.year = Number(this.loans[i].req_date.split('-')[0]);
     this.loan.req_user = this.loans[i].req_user;
-    this.loan.updated_by = this.loans[i].updated_by;
 
     $('#new_Loan').modal({backdrop: 'static', keyboard: false});
   }
 
   clickUpdateLoan() {
     this.loan.req_date = this.loan.user_set_req_date.year + '-' + this.loan.user_set_req_date.month + '-' + this.loan.user_set_req_date.day;
-    this.loan.amount = (Number(this.loan.amount) * 100) + '';
-    this.loan.charges = (Number(this.loan.charges) * 100) + '';
-    this.loan.late_payment_charge = (Number(this.loan.late_payment_charge) * 100) + '';
-    this.loan.reject_cheque_penalty = (Number(this.loan.reject_cheque_penalty) * 100) + '';
 
-    this.loansService.updateMemberLoan(this.loan).subscribe((data: any) => {
+    this.loansService.updateMemberSavingRate(this.loan).subscribe((data: any) => {
         this.getAllLoans();
-        this.notifi.success('Loan Updated');
+        this.notifi.success('Savings Rate Updated');
         $('#new_Loan').modal('hide');
       }, (err) => {
-        this.notifi.error('While Updating Loan');
+        this.notifi.error('While Updating Savings Rate');
       }
     );
   }
@@ -165,7 +111,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
     const currentClass = this;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Delete ' + this.getLoanCode(this.loans[i].id),
+      text: 'Cancel ' + this.loans[i].rate,
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'btn-danger',
@@ -174,11 +120,11 @@ export class LoansComponent implements OnInit, AfterViewInit {
       (willDelete) => {
         if (willDelete.value) {
           currentClass.loan.id = currentClass.loans[i].id;
-          currentClass.loansService.deleteMemberLoan(this.loan).subscribe((data: any) => {
+          currentClass.loansService.cancelMemberSavingRate(this.loan).subscribe((data: any) => {
               currentClass.getAllLoans();
-              currentClass.notifi.success('Loan Deleted');
+              currentClass.notifi.success('Savings Rate Cancelled');
             }, (err) => {
-              currentClass.notifi.error('While Deleting Loan');
+              currentClass.notifi.error('While Cancelling Savings Rate');
             }
           );
         }
@@ -193,65 +139,44 @@ export class LoansComponent implements OnInit, AfterViewInit {
 
 
     this.loan.id = -1;
-    this.loan.code = '-';
-    this.loan.member_id = '';
-    this.loan.member_loan_plan_id = '-1';
+    this.loan.description = '-';
     this.loan.rate = '1';
-    this.loan.amount = '0.0';
-    this.loan.charges = '0.0';
-    this.loan.duration_months = 0;
-    this.loan.grace_period_days = 0;
-    this.loan.late_payment_charge = '0.0';
-    this.loan.reject_cheque_penalty = '0.0';
     this.loan.status = '1';
-    this.loan.note = '-';
     this.loan.req_date = '';
     this.loan.req_user = '-1';
-    this.loan.updated_by = '';
 
     this.loan.user_set_req_date = today;
   }
 
   getAllLoans() {
     this.loans = [];
-    this.loansService.getAllMemberLoans().subscribe((data: any) => {
+    this.loansService.getAllMemberSavingRates().subscribe((data: any) => {
         this.loans = data;
         this.addIndex(this.loans);
         this.drawTable();
       }, (err) => {
-        this.notifi.error('While fetching Loan details');
-        this.loansDataTable.clear();
-        this.loansDataTable.draw();
+        this.notifi.error('While fetching Savings Rate details');
+        this.savingsRateDataTable.clear();
+        this.savingsRateDataTable.draw();
       }
     );
   }
 
-  getAllCustomers() {
-    this.customers = [];
-    this.loansService.getAllCustomers().subscribe((data: any) => {
-        this.customers = data;
-        this.addIndex(this.customers);
-      }, (err) => {
-        this.notifi.error('While fetching Member details');
-      }
-    );
-  }
 
   refreshLoans() {
-    this.loansDataTableSearch = '';
+    this.savingsRateDataTableSearch = '';
     this.getAllLoans();
-    this.getAllCustomers();
     this.searchData();
   }
 
   /////////////////////////////////////////////////////////////// datatable related code begin
   initDataTable() {
-    if (!this.loansDataTable) {
-      this.loansDataTable = $('#loansDataTable').DataTable({
+    if (!this.savingsRateDataTable) {
+      this.savingsRateDataTable = $('#savingsRateDataTable').DataTable({
         scrollX: false,
         scrollCollapse: true,
         paging: true,
-        pageLength: this.loansDataTableLength,
+        pageLength: this.savingsRateDataTableLength,
         responsive: false,
         sDom: 'Btipr',
         searching: true,
@@ -275,7 +200,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
               //   $(this).css('background-color','#D0D0D0');
               // });
               $(win.document.body).find('h1').css('text-align', 'center');
-              $(win.document.body).find('h1').text('Loans');
+              $(win.document.body).find('h1').text('Saving Rate History');
             }
           },
           'copy', 'csv', 'excel', 'pdf'
@@ -287,7 +212,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
           {
             searchable: false,
             sortable: false,
-            targets: [0, 8]
+            targets: [0, 6]
           },
           {
             visible: false,
@@ -295,7 +220,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
           },
           {
             className: 'text-right',
-            targets: [4, 5, 6]
+            targets: [1]
           }],
         order: [[0, 'asc']],
       });
@@ -307,15 +232,15 @@ export class LoansComponent implements OnInit, AfterViewInit {
     const currClassRef = this;
 
     // unbind previous event on tbody so that multiple events are not binded to the table whenever this function runs again
-    $('#loansDataTable tbody td').unbind();
+    $('#savingsRateDataTable tbody td').unbind();
 
     // defined jquery click event
-    $('#loansDataTable tbody td').on('click', 'button', function() {
+    $('#savingsRateDataTable tbody td').on('click', 'button', function() {
       // the "this" in this function is "this" of jquery object not of component because we did not use an arrow function
 
       // get row for data
       const tr = $(this).closest('tr');
-      const row = currClassRef.loansDataTable.row(tr);
+      const row = currClassRef.savingsRateDataTable.row(tr);
       // this of jquery object
       if ($(this).hasClass('editLoan')) {
         // use function of current class using reference
@@ -331,11 +256,11 @@ export class LoansComponent implements OnInit, AfterViewInit {
   }
 
   searchData() {
-    this.loansDataTable.search(this.loansDataTableSearch).draw();
+    this.savingsRateDataTable.search(this.savingsRateDataTableSearch).draw();
   }
 
   setDatatableLength() {
-    this.loansDataTable.page.len(this.loansDataTableLength).draw();
+    this.savingsRateDataTable.page.len(this.savingsRateDataTableLength).draw();
   }
 
   drawTable() {
@@ -343,7 +268,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
     // this.customerDataTable.rows().every(function(rowIdx, tableLoop, rowLoop) {
     //   this.invalidate();
     // });
-    this.loansDataTable.clear();
+    this.savingsRateDataTable.clear();
     // this.datatable.clear();
     // this.datatable.rows.add(this.doctors);
     // this.datatable.draw();
@@ -351,16 +276,19 @@ export class LoansComponent implements OnInit, AfterViewInit {
 // Draw once all updates are done
 //     this.dataTable.rows().clear().draw();
     for (const loan of this.loans) {
-      const action =
+      let action =
         '<button class="btn btn-mini btn-warning editLoan" > <i class="icofont icofont-edit-alt" aria-hidden="true"></i></button> ' +
         '<button class="btn btn-mini btn-danger deleteLoan"> <i class="icofont icofont-ui-delete" aria-hidden="true"></i></button>';
 
-      this.loansDataTable.row.add([loan.index, this.getLoanCode(loan.id), this.getCustomerCode(loan.member_id),
-        loan.req_date, loan.rate + '%', this.cents2rupees(loan.amount), loan.duration_months, loan.note,
-        loan.updated_by, this.loanStatus[loan.status], action]);
+      if (loan.status === '4') {
+        action = '';
+      }
+
+      this.savingsRateDataTable.row.add([loan.index, loan.rate + '%', loan.req_date, loan.description, loan.updated_by,
+         this.status[loan.status], action]);
 
     }
-    this.loansDataTable.draw();
+    this.savingsRateDataTable.draw();
   }
 
   /////////////////////////////////////////////////////////////// datatable related code end

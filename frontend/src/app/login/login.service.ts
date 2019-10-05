@@ -3,8 +3,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from 'src/environments/environment.prod';
 import {MiddlewareService} from '../middleware.service';
 import {Router} from '@angular/router';
-import {SalesReturnService} from '../page-found/content/sales-return/sales-return.service';
 import {NotificationsService} from '../utils/notifications';
+import {Md5} from 'md5-typescript';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,7 @@ export class LoginService {
   };
 
   public login(username, password) {
+    password = this.getHash(password);
     this.loginEndpoint(username, password).subscribe((data: any) => {
         if (data.user.length > 0 && data.user[0].uname === username && data.user[0].pass === password) {
           localStorage.setItem('oidfjntid', JSON.stringify(data));
@@ -133,5 +134,9 @@ export class LoginService {
 
   private isTokenValid() {
     return this.getTokenValidTime() > 0;
+  }
+
+  public getHash(str) {
+    return Md5.init(str);
   }
 }

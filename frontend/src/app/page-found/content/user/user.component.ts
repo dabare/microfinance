@@ -69,9 +69,9 @@ export class UserComponent implements OnInit {
       }
     ]).then((result) => {
       if (result.value) {
-        if (result.value[0] === this.password) {
+        if (this.loginService.getHash(result.value[0]) === this.password) {
           if (result.value[1] === result.value[2]) {
-            this.password = result.value[1];
+            this.password = this.loginService.getHash(result.value[1]);
             this.changePasssword();
           } else {
             this.notifi.notice('New password confirmation failed');
