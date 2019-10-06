@@ -25,23 +25,16 @@
 
       <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" class="pcoded-hasmenu">
         <a href="javascript:void(0)">
-          <span class="pcoded-micon"><i class="ti-layout-list-post"></i><b>D</b></span>
+          <span class="pcoded-micon"><i class="fa fa-download"></i><b>D</b></span>
           <span class="pcoded-mtext">Savings</span>
           <!-- <span class="pcoded-badge label label-danger">**</span> -->
           <span class="pcoded-mcaret"></span>
         </a>
         <ul class="pcoded-submenu">
-          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" id="grn" (click)="clickLink('#grn')" title="Issue GRN">
-            <a [routerLink]="['./grn']">
+          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3" id="savings" (click)="clickLink('#savings')" title="Saving Ledger">
+            <a [routerLink]="['./savings']">
               <span class="pcoded-micon"><i class="ti-list"></i><b>D</b></span>
               <span class="pcoded-mtext">Saving Ledger</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" id="grn-list" (click)="clickLink('#grn-list')" title="GRN List">
-            <a [routerLink]="['./grn-list']">
-              <span class="pcoded-micon"><i class="ti-list"></i><b>D</b></span>
-              <span class="pcoded-mtext">Withdraw Ledger</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
@@ -57,7 +50,7 @@
 
       <li *ngIf="getUserTypeId() == 13 || getUserTypeId() == 3 || getUserTypeId() == 2" class="pcoded-hasmenu">
         <a href="javascript:void(0)">
-          <span class="pcoded-micon"><i class="ti-user"></i><b>D</b></span>
+          <span class="pcoded-micon"><i class="fa fa-upload"></i><b>D</b></span>
           <span class="pcoded-mtext">Loans</span>
           <span class="pcoded-mcaret"></span>
         </a>

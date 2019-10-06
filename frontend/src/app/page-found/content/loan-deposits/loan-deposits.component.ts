@@ -99,7 +99,7 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
     while (id.length < 5) {
       id = '0' + id;
     }
-    return 'INV' + id;
+    return 'INVL' + id;
   }
 
   cents2rupees(cents) {

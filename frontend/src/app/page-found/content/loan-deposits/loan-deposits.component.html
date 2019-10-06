@@ -111,7 +111,7 @@
                           <label class="j-icon-right">
                             <i class="icofont icofont-notebook"></i>
                           </label>
-                          <select [(ngModel)]="loanDeposit.member_loan_id" name="select" class="form-control">
+                          <select [(ngModel)]="loanDeposit.member_loan_id" name="select" class="form-control" [disabled]="actionMode=='edit'">
                             <option *ngFor="let loan of loans" [ngValue]="loan.id">{{getLoanCode(loan.id) + ' - ' + loan.name}}</option>
                           </select>
                         </div>

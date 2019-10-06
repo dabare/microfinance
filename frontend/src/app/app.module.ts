@@ -31,6 +31,7 @@ import {ResponseInterceptor} from './response.interceptor';
 import {LoansComponent} from './page-found/content/loans/loans.component';
 import {LoanDepositsComponent} from './page-found/content/loan-deposits/loan-deposits.component';
 import {SavingRateComponent} from "./page-found/content/saving-rate/saving-rate.component";
+import {SavingsComponent} from "./page-found/content/savings/savings.component";
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {SavingRateComponent} from "./page-found/content/saving-rate/saving-rate.
     SystemSettingsComponent,
     LoansComponent,
     LoanDepositsComponent,
-    SavingRateComponent
+    SavingRateComponent,
+    SavingsComponent
   ],
   imports: [
     BrowserModule,

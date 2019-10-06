@@ -32,6 +32,6 @@ func cancelMemberLoanDeposit(w http.ResponseWriter, r *http.Request) {
 
 func updateMemberLoanDeposit(w http.ResponseWriter, r *http.Request) {
 	execute(w, r, `UPDATE `+userDbReplaceStr+`.member_loan_deposit 
-SET  member_loan_id=:member_loan_id, amount=:amount, req_date=:req_date, req_user=:req_user, note=:note
+SET amount=:amount, req_date=:req_date, req_user=:req_user, note=:note
 						where id=(:id)`)
 }

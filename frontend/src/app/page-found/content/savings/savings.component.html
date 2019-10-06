@@ -1,0 +1,207 @@
+
+<div class="">
+  <!--Removed pcoded-content class -->
+  <div class="pcoded-inner-content">
+    <!-- Main-body start -->
+    <div class="main-body">
+      <div class="card">
+        <div class="card-block">
+        <div class="page-body">
+          <div class="row">
+            <div class="col-sm-2">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon  ">
+                  <i class="icofont icofont-ui-search "></i></span>
+                <input type="text" (keyup)="searchData()" [(ngModel)]="savingsDataTableSearch"
+                       class="form-control form-control-round" placeholder="Search here...">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="input-group input-group-sm ">
+                Show &nbsp;
+                <select class="form-control" [(ngModel)]="savingsDataTableLength" (change)="setDatatableLength()">
+                  <option value=5>5</option>
+                  <option value=10>10</option>
+                  <option value=50>50</option>
+                  <option value=-1>All</option>
+                </select>
+                &nbsp; entries
+              </div>
+            </div>
+
+            <div class="col-sm-7">
+              <div class="pull-right input-group-sm ">
+                <button style="padding: 10px;" class="btn btn-info" (click)="refreshSavings()">
+                  <i class="icofont icofont-refresh" aria-hidden="true"></i> Refresh
+                </button>
+                &nbsp;
+                <button style="padding: 10px;" class="btn btn-success" (click)="clickNewSaving()">
+                  <i class="icofont icofont-plus" aria-hidden="true"></i> Deposit
+                </button>
+                &nbsp;
+                <button style="padding: 10px;" class="btn btn-success" (click)="clickNewWithdrawal()">
+                  <i class="icofont icofont-plus" aria-hidden="true"></i> Withdrawal
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+
+              <div class="dt-responsive table-responsive">
+                <table id="savingsDataTable"
+                       class="table table-xs display compact table-striped table-bordered nowrap" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Member</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                    <th>Status</th>
+                    <th>Updated By</th>
+                    <th>Withdrawal</th>
+                    <th>Deposit</th>
+                    <td></td>
+                  </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tfoot>
+                  <tr>
+                    <th>#</th>
+                    <th>Code</th>
+                    <th>Member</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                    <th>Status</th>
+                    <th>Updated By</th>
+                    <th>Withdrawal</th>
+                    <th>Deposit</th>
+                    <td></td>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="new_Saving" class="modal fade" role="dialog" style="z-index: 9999;">
+      <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" *ngIf="actionMode=='new' && saving.trx_type=='DEPOSIT'">New Deposit</h4>
+            <h4 class="modal-title" *ngIf="actionMode=='new' && saving.trx_type=='WITHDRAWAL'">New Withdrawal</h4>
+            <h4 class="modal-title" *ngIf="actionMode=='edit' && saving.trx_type=='DEPOSIT'">Edit Deposit - {{getSavingCode(saving.id)}}</h4>
+            <h4 class="modal-title" *ngIf="actionMode=='edit' && saving.trx_type=='WITHDRAWAL'">Edit Withdrawal - {{getWithdrawCode(saving.id)}}</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="card-block row">
+
+              <div class="col-sm-6">
+                <form class="j-pro">
+                  <div class="j-content">
+                    <!-- start name -->
+                    <div>
+                      <label class="j-label">Member</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-notebook"></i>
+                          </label>
+                          <select [(ngModel)]="saving.member_id" name="select" class="form-control" [disabled]="actionMode=='edit'">
+                            <option *ngFor="let cus of members" [ngValue]="cus.id">{{getCustomerCode(cus.id) + ' - ' + cus.name}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="j-label col-form-label">Date</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right" (click)="d.toggle()">
+                            <i class="icofont icofont-ui-calendar"></i>
+                          </label>
+                          <input class="form-control" placeholder="yyyy-mm-dd" autocomplete="disabled"
+                                 name="dp" [(ngModel)]="saving.user_set_req_date" ngbDatepicker #d="ngbDatepicker">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="j-response"></div>
+                  </div>
+                </form>
+              </div>
+              <div class="col-sm-6">
+                <form action="#" method="post" class="j-pro" id="j-pro" novalidate>
+
+                  <div class="j-content">
+                    <div>
+                      <label class="j-label">Amount</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-money"></i>
+                          </label>
+                          <input type="number" min="1" step="0.01" autocomplete="disabled" placeholder="Amount" class="form-control"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="saving.amount">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="j-label">Note</label>
+                      <div class="j-unit">
+                        <div class="j-input">
+                          <label class="j-icon-right">
+                            <i class="icofont icofont-ui-note"></i>
+                          </label>
+                          <input type="text" autocomplete="disabled" placeholder="Note"
+                                 [ngModelOptions]="{standalone: true}" [(ngModel)]="saving.note">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="j-response"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" (click)="clickRegisterSaving()"
+                    *ngIf="actionMode=='new' && saving.trx_type=='DEPOSIT'">Register
+            </button>
+            <button type="submit" class="btn btn-success" (click)="clickRegisterWithdrawal()"
+                    *ngIf="actionMode=='new' && saving.trx_type=='WITHDRAWAL'">Register
+            </button>
+
+
+            <button type="submit" class="btn btn-success" (click)="clickUpdateSaving()"
+                    *ngIf="actionMode=='edit' && saving.trx_type=='DEPOSIT'">Update
+            </button>
+            <button type="submit" class="btn btn-success" (click)="clickUpdateWithdrawal()"
+                    *ngIf="actionMode=='edit' && saving.trx_type=='WITHDRAWAL'">Update
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div id="styleSelector">
+
+    </div>
+  </div>
+</div>
