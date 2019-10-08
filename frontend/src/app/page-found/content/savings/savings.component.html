@@ -79,8 +79,22 @@
                     <th>Updated By</th>
                     <th>Withdrawal</th>
                     <th>Deposit</th>
-                    <td></td>
+                    <th style="text-align:right">Diff.</th>
                   </tr>
+                  <tr>
+                    <th style="text-align:right" colspan="8">Total Current Page:</th>
+                    <th style="text-align:right">{{totalCurrentWithdrawal}}</th>
+                    <th style="text-align:right">{{totalCurrentDeposit}}</th>
+                    <th style="text-align:right">{{totalCurrentDeposit - totalCurrentWithdrawal}}</th>
+                  </tr>
+
+                  <tr>
+                    <th style="text-align:right" colspan="8">Total All:</th>
+                    <th style="text-align:right">{{totalAllWithdrawal}}</th>
+                    <th style="text-align:right">{{totalAllDeposit}}</th>
+                    <th style="text-align:right">{{totalAllDeposit - totalAllWithdrawal}}</th>
+                  </tr>
+
                   </tfoot>
                 </table>
               </div>

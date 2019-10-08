@@ -98,7 +98,7 @@ export class LoginService {
   public refreshToken() {
     if (this.isTokenValid() && (this.getTokenValidTime() < 60 * 10)) {
       this.notifi.info('Your session is about to expire. Trying to revalidate...');
-      this.autoLogin();
+      //this.autoLogin();
     } else if (!this.isTokenValid()) {
       // this.tokenExpiredRedirectToLogin();
     }

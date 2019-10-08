@@ -23,6 +23,12 @@ export class SavingsComponent implements OnInit, AfterViewInit {
   savingsDataTableSearch = '';
   savingsDataTable: any;
 
+  totalCurrentDeposit = '0.00';
+  totalAllDeposit = '0.00';
+
+  totalCurrentWithdrawal = '0.00';
+  totalAllWithdrawal = '0.00';
+
   actionMode = '';
 
   savings: any[] = [];
@@ -133,6 +139,14 @@ export class SavingsComponent implements OnInit, AfterViewInit {
       cents = '0' + cents;
     }
     return rupees + '.' + cents;
+  }
+
+  getSum(arr, index, display) {
+    let tot = 0;
+    for (const x of display) {
+      tot += Number(arr[x][index]) * 100;
+    }
+    return this.cents2rupees(tot);
   }
 
   clickEditSaving(i) {
@@ -340,9 +354,10 @@ export class SavingsComponent implements OnInit, AfterViewInit {
           }],
         order: [[0, 'asc']],
         footerCallback: (row, data, start, end, display) => {
-          console.log(data);
-          console.log(start);
-          console.log(end);
+          this.totalCurrentDeposit = this.getSum(data, 9, display.slice(start, end));
+          this.totalCurrentWithdrawal = this.getSum(data, 8, display.slice(start, end));
+          this.totalAllDeposit = this.getSum(data, 9, display);
+          this.totalAllWithdrawal = this.getSum(data, 8, display);
         }
       });
     }

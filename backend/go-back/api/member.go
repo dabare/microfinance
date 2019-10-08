@@ -10,6 +10,7 @@ func initMember(router *mux.Router) {
 	router.HandleFunc("/api/insertMember", insertMember).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/deleteMember", deleteMember).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/updateMember", updateMember).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/viewMemberSavingHistory", viewMemberSavingHistory).Methods("POST", "OPTIONS")
 }
 
 func viewAllMembers(w http.ResponseWriter, r *http.Request) {
@@ -29,4 +30,9 @@ func updateMember(w http.ResponseWriter, r *http.Request) {
 	execute(w, r, `UPDATE `+userDbReplaceStr+`.member 
 						SET code=:code, name=:name, nic=:nic, dob=:dob, tel=:tel, address=:address, email=:email, representative=:representative, bondsman=:bondsman, bondsman_nic=:bondsman_nic, req_user=:req_user 
 						where id=(:id)`)
+}
+
+func viewMemberSavingHistory(w http.ResponseWriter, r *http.Request) {
+	query(w, r, `SELECT m.*, date_format(m.req_date,'%Y-%m-%d') AS req_date
+						FROM `+userDbReplaceStr+`.member_saving_history AS m WHERE m.member_id='-1' OR m.member_id=(:id)`)
 }

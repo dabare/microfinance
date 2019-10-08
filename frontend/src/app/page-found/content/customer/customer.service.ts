@@ -29,4 +29,9 @@ export class CustomerService {
   deleteCustomer(customer: any) {
     return this.httpClient.post(environment.apiUrl + '/deleteMember', customer);
   }
+
+  getCustomerSavingHistory(customer: any) {
+    return this.httpClient.post(environment.apiUrl + '/viewMemberSavingHistory', customer);
+  }
+
 }

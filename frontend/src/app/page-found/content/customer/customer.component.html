@@ -6,81 +6,138 @@
     <div class="main-body">
       <div class="card">
         <div class="card-block">
-        <div class="page-body">
-          <div class="row">
-            <div class="col-sm-2">
-              <div class="input-group input-group-sm">
+          <div class="page-body">
+            <div class="row">
+              <div class="col-sm-2">
+                <div class="input-group input-group-sm">
                 <span class="input-group-addon  ">
                   <i class="icofont icofont-ui-search "></i></span>
-                <input type="text" (keyup)="searchData()" [(ngModel)]="customerDataTableSearch"
-                       class="form-control form-control-round" placeholder="Search here...">
+                  <input type="text" (keyup)="searchData()" [(ngModel)]="customerDataTableSearch"
+                         class="form-control form-control-round" placeholder="Search here...">
+                </div>
               </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="input-group input-group-sm ">
-                Show &nbsp;
-                <select class="form-control" [(ngModel)]="customerDataTableLength" (change)="setDatatableLength()">
-                  <option value=5>5</option>
-                  <option value=10>10</option>
-                  <option value=50>50</option>
-                  <option value=-1>All</option>
-                </select>
-                &nbsp; entries
+              <div class="col-sm-3">
+                <div class="input-group input-group-sm ">
+                  Show &nbsp;
+                  <select class="form-control" [(ngModel)]="customerDataTableLength" (change)="setDatatableLength()">
+                    <option value=5>5</option>
+                    <option value=10>10</option>
+                    <option value=50>50</option>
+                    <option value=-1>All</option>
+                  </select>
+                  &nbsp; entries
+                </div>
               </div>
-            </div>
 
-            <div class="col-sm-7">
-              <div class="pull-right input-group-sm ">
-                <button style="padding: 10px;" class="btn btn-info" (click)="refreshCustomers()">
-                  <i class="icofont icofont-refresh" aria-hidden="true"></i> Refresh
-                </button>
-                &nbsp;
-                <button style="padding: 10px;" class="btn btn-success" (click)="clickNewCustomer()">
-                  <i class="icofont icofont-plus" aria-hidden="true"></i> New
-                </button>
+              <div class="col-sm-7">
+                <div class="pull-right input-group-sm ">
+                  <button style="padding: 10px;" class="btn btn-info" (click)="refreshCustomers()">
+                    <i class="icofont icofont-refresh" aria-hidden="true"></i> Refresh
+                  </button>
+                  &nbsp;
+                  <button style="padding: 10px;" class="btn btn-success" (click)="clickNewCustomer()">
+                    <i class="icofont icofont-plus" aria-hidden="true"></i> New
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
+            <div class="row">
+              <div class="col-sm-12">
 
-              <div class="dt-responsive table-responsive">
-                <table id="customersDataTable"
-                       class="table table-xs display compact table-striped table-bordered nowrap" style="width: 100%;">
-                  <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>NIC</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Rep.</th>
-                    <th>Reg.</th>
-                    <th>Updated By</th>
-                    <td></td>
-                  </tr>
-                  </thead>
-                  <tbody></tbody>
-                  <tfoot>
-                  <tr>
-                    <th>#</th>
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>NIC</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Rep.</th>
-                    <th>Reg.</th>
-                    <th>Updated By</th>
-                    <td></td>
-                  </tr>
-                </table>
+                <div class="dt-responsive table-responsive">
+                  <table id="customersDataTable"
+                         class="table table-xs display compact table-striped table-bordered nowrap" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Code</th>
+                      <th>Name</th>
+                      <th>NIC</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Rep.</th>
+                      <th>Reg.</th>
+                      <th>Updated By</th>
+                      <td></td>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                      <th>#</th>
+                      <th>Code</th>
+                      <th>Name</th>
+                      <th>NIC</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Rep.</th>
+                      <th>Reg.</th>
+                      <th>Updated By</th>
+                      <td></td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="card">
+
+        <div class="card-block">
+          <div class="page-body">
+
+            <div class="row">
+              <div class="col-sm-12">
+                <h4>{{getCustomerCode(customer.id)}} -- {{customer.name}}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+
+        <div class="card-block">
+          <div class="page-body">
+
+            <div class="row">
+              <div class="col-sm-12">
+
+                <h4>Savings History</h4>
+                <table class="table">
+                  <thead class="table-dark">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Days Passed</th>
+                    <th scope="col">Interest</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let rec of savingHistory; let i = index">
+                    <td  class="text-center" scope="row">{{i + 1}}</td>
+                    <td>{{rec.req_date}}</td>
+                    <td>{{rec.description}}</td>
+                    <td class="text-right">{{cents2rupees(rec.amount)}}</td>
+                    <td class="text-center">{{rec.rate}}</td>
+                    <td class="text-right">{{rec.days_passed}}</td>
+                    <td class="text-right">{{cents2rupees(rec.interest)}}</td>
+                    <td class="text-right">{{cents2rupees(rec.balance)}}</td>
+                    <td class="text-right">{{cents2rupees(rec.total)}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
