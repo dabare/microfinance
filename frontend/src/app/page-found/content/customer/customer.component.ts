@@ -3,6 +3,7 @@ import {CustomerService} from './customer.service';
 import {NotificationsService} from '../../../utils/notifications';
 import Swal from 'sweetalert2';
 import {ActivatedRoute} from '@angular/router';
+import {FinanceService} from '../utils/finance.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -44,7 +45,8 @@ export class CustomerComponent implements OnInit, AfterViewInit {
 
   savingHistory: any[] = [];
 
-  constructor(private route: ActivatedRoute, private customerService: CustomerService, private notifi: NotificationsService) {
+  constructor(private route: ActivatedRoute, private customerService: CustomerService,
+              private notifi: NotificationsService, public financeService: FinanceService) {
   }
 
 
@@ -178,97 +180,15 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     this.loadCustomer(i);
     this.savingHistory = [];
     this.customerService.getCustomerSavingHistory(this.customer).subscribe((data: any) => {
-        this.savingHistory = data;
-        this.processSavingHistory();
-        console.log(this.savingHistory);
+        this.savingHistory = this.financeService.processSavingHistory(data);
       }, (err) => {
         this.notifi.error('While fetching Member History');
       }
     );
   }
 
-  cents2rupees(cents) {
-    cents = Math.ceil(cents);
-    let sign = '';
-    if (cents < 0) {
-      sign = '-';
-      cents *= -1;
-    }
-    const rupees = Math.floor(cents / 100);
-    cents = cents % 100 + '';
-    while (cents.length < 2) {
-      cents = '0' + cents;
-    }
-    return sign + rupees + '.' + cents;
-  }
-
-  processSavingHistory() {
-    const d = new Date();
-    let dd = d.getFullYear() + '-' + (d.getMonth() + 1) ;
-    if ( d.getDate() < 10) {
-      dd += '-0' + d.getDate();
-    } else {
-      dd += '-' + d.getDate();
-    }
-    let firstRate = 0;
-    let currentRateIndex = 0;
-    this.savingHistory.push(
-      {
-        trx_type: 'BALANCE',
-        req_date: dd
-      }
-    );
-    for (let i = 0; i < this.savingHistory.length; i++) {
-      if (firstRate === 0 && i < this.savingHistory.length - 1 && this.savingHistory[i + 1].trx_type !== 'RATE') {
-        firstRate = i;
-      }
-
-      if (firstRate === 0 && i < this.savingHistory.length - 1 &&
-        this.savingHistory[i].trx_type === 'RATE' && this.savingHistory[i + 1].trx_type === 'RATE') {
-        firstRate = i + 1;
-      }
-
-      if (this.savingHistory[i].trx_type === 'RATE') {
-        this.savingHistory[i].description = 'Rate Change ' + this.savingHistory[i].description;
-        this.savingHistory[i].amount = 0;
-        currentRateIndex = i;
-      } else if (this.savingHistory[i].trx_type === 'DEPOSIT') {
-        this.savingHistory[i].description = 'Deposit ' + this.savingHistory[i].description;
-        this.savingHistory[i].amount = Number(this.savingHistory[i].value);
-      } else if (this.savingHistory[i].trx_type === 'WITHDRAWAL') {
-        this.savingHistory[i].description = 'Withdrawal ' + this.savingHistory[i].description;
-        this.savingHistory[i].amount = -1 * Number(this.savingHistory[i].value);
-      } else if (this.savingHistory[i].trx_type === 'BALANCE') {
-        this.savingHistory[i].description = 'Balance Upto Now';
-        this.savingHistory[i].amount = 0;
-      }
-
-      const newDate = new Date(this.savingHistory[i].req_date.split('-')[0],
-        this.savingHistory[i].req_date.split('-')[1], this.savingHistory[i].req_date.split('-')[2]);
-      let oldDate = newDate;
-
-      if (i > firstRate) {
-        oldDate = new Date(this.savingHistory[i - 1].req_date.split('-')[0],
-          this.savingHistory[i - 1].req_date.split('-')[1], this.savingHistory[i - 1].req_date.split('-')[2]);
-      }
-
-      this.savingHistory[i].rate = Number(this.savingHistory[currentRateIndex].value);
-
-      if (i === firstRate) {
-        this.savingHistory[i].interest = 0;
-        this.savingHistory[i].balance = 0;
-        this.savingHistory[i].total = 0;
-        this.savingHistory[i].days_passed = 0;
-      } else if (i > firstRate) {
-        this.savingHistory[i].days_passed = Math.ceil((newDate.getTime() - oldDate.getTime()) / (1000 * 60 * 60 * 24));
-        this.savingHistory[i].interest = (this.savingHistory[i - 1].total * this.savingHistory[i].days_passed
-          * this.savingHistory[i - 1].rate) / 365;
-        this.savingHistory[i].balance = this.savingHistory[i - 1].total + this.savingHistory[i].interest;
-        this.savingHistory[i].total = this.savingHistory[i].balance + this.savingHistory[i].amount;
-      }
-
-    }
-    this.savingHistory = this.savingHistory.slice(firstRate, this.savingHistory.length);
+  backToAllMembers(){
+    this.actionMode = '';
   }
 
   clearCustomer() {
