@@ -2,6 +2,9 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {NotificationsService} from '../../../utils/notifications';
 import Swal from 'sweetalert2';
 import {LoanDepositsService} from './loan-deposits.service';
+import {ActivatedRoute} from '@angular/router';
+import {FinanceService} from '../utils/finance.service';
+import {LeftNavBarService} from '../../left-nav-bar/left-nav-bar.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -40,11 +43,18 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
 
   loans: any[] = [];
 
-  constructor(private loanDepositsService: LoanDepositsService, private notifi: NotificationsService) {
+  constructor(private route: ActivatedRoute, public financeService: FinanceService,
+              private loanDepositsService: LoanDepositsService, private notifi: NotificationsService,
+              private leftNavBarService: LeftNavBarService) {
   }
 
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params && params.code) {
+        this.loanDepositsDataTableSearch = params.code;
+      }
+    });
     this.clearLoanDeposit();
   }
 
@@ -75,49 +85,13 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
     );
   }
 
-  addIndex(array: any[]) {
-    for (let index = 0; index < array.length; index++) {
-      array[index].index = index;
-    }
-  }
-
-  getCustomerCode(id) {
-    while (id.length < 3) {
-      id = '0' + id;
-    }
-    return 'MEM' + id;
-  }
-
-  getLoanCode(id) {
-    while (id.length < 4) {
-      id = '0' + id;
-    }
-    return 'LOAN' + id;
-  }
-
-  getDepositCode(id) {
-    while (id.length < 5) {
-      id = '0' + id;
-    }
-    return 'INVL' + id;
-  }
-
-  cents2rupees(cents) {
-    const rupees = Math.floor(cents / 100);
-    cents = cents % 100 + '';
-    while (cents.length < 2) {
-      cents = '0' + cents;
-    }
-    return rupees + '.' + cents;
-  }
-
   clickEditLoanDeposit(i) {
     this.actionMode = 'edit';
     this.clearLoanDeposit();
 
     this.loanDeposit.id = this.loanDeposits[i].id;
     this.loanDeposit.member_loan_id = this.loanDeposits[i].member_loan_id;
-    this.loanDeposit.amount = this.cents2rupees(Number(this.loanDeposits[i].amount));
+    this.loanDeposit.amount = this.financeService.cents2rupees(Number(this.loanDeposits[i].amount));
     this.loanDeposit.status = this.loanDeposits[i].status;
     this.loanDeposit.note = this.loanDeposits[i].note;
     this.loanDeposit.req_date = this.loanDeposits[i].req_date;
@@ -144,13 +118,23 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
     );
   }
 
+  gotoCustomer(i) {
+    this.leftNavBarService.navigate('/app/customer',
+      { queryParams: { code: this.financeService.getCustomerCode(this.loanDeposits[i].member_id) } });
+  }
+
+  gotoLoan(i) {
+    this.leftNavBarService.navigate('/app/loans',
+      { queryParams: { code: this.financeService.getLoanCode(this.loanDeposits[i].member_loan_id) } });
+  }
+
   clickDeleteLoanDeposit(i) {
     this.actionMode = 'delete';
     this.clearLoanDeposit();
     const currentClass = this;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Cancel ' + this.getDepositCode(this.loanDeposits[i].id),
+      text: 'Cancel ' + this.financeService.getDepositCode(this.loanDeposits[i].id),
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'btn-danger',
@@ -191,7 +175,7 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
     this.loanDeposits = [];
     this.loanDepositsService.getAllMemberLoanDeposits().subscribe((data: any) => {
         this.loanDeposits = data;
-        this.addIndex(this.loanDeposits);
+        this.financeService.addIndex(this.loanDeposits);
         this.drawTable();
       }, (err) => {
         this.notifi.error('While fetching Deposit details');
@@ -205,7 +189,7 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
     this.loans = [];
     this.loanDepositsService.getActiveMemberLoans().subscribe((data: any) => {
         this.loans = data;
-        this.addIndex(this.loans);
+        this.financeService.addIndex(this.loans);
       }, (err) => {
         this.notifi.error('While fetching Member details');
       }
@@ -274,6 +258,7 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
           }],
         order: [[0, 'asc']],
       });
+      this.searchData();
     }
   }
 
@@ -296,8 +281,10 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
         currClassRef.clickEditLoanDeposit(row.data()[0]);
       } else if ($(this).hasClass('deleteLoanDeposit')) {
         currClassRef.clickDeleteLoanDeposit(row.data()[0]);
-      } else if ($(this).hasClass('showUpdateModal')) {
-
+      } else if ($(this).hasClass('gotoCustomer')) {
+        currClassRef.gotoCustomer(row.data()[0]);
+      } else if ($(this).hasClass('gotoLoan')) {
+        currClassRef.gotoLoan(row.data()[0]);
       }
 
     });
@@ -328,13 +315,21 @@ export class LoanDepositsComponent implements OnInit, AfterViewInit {
         '<button class="btn btn-mini btn-warning editLoanDeposit" > <i class="icofont icofont-edit-alt" aria-hidden="true"></i></button> ' +
         '<button class="btn btn-mini btn-danger deleteLoanDeposit"> <i class="icofont icofont-ui-delete" aria-hidden="true"></i></button>';
 
+      const memberID =
+        `<button class="btn btn-mini btn-info gotoCustomer">` + this.financeService.getCustomerCode(deposit.member_id) + `</button>`;
+      const loanID =
+        `<button class="btn btn-mini btn-info gotoLoan">` + this.financeService.getLoanCode(deposit.member_loan_id) + `</button>`;
+
+
       if (deposit.status === '4') {
         action = '';
       }
 
-      this.loanDepositsDataTable.row.add([deposit.index, this.getDepositCode(deposit.id), this.getLoanCode(deposit.member_loan_id),
-        this.getCustomerCode(deposit.member_id),
-        deposit.req_date, this.cents2rupees(deposit.amount), deposit.note, this.loanDepositStatus[deposit.status],
+      this.loanDepositsDataTable.row.add([deposit.index, this.financeService.getDepositCode(deposit.id),
+        loanID,
+        memberID,
+        deposit.req_date, this.financeService.cents2rupees(deposit.amount), deposit.note,
+        this.loanDepositStatus[deposit.status],
         deposit.updated_by, action]);
 
     }

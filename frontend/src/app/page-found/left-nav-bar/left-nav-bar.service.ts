@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 
 declare var $: any;
 
@@ -8,9 +9,18 @@ declare var $: any;
 
 export class LeftNavBarService {
 
+  private linkMap = {
+    '/app/customer': '#member',
+    '/app/loan-deposits': '#loan-deposits',
+    '/app/loans': '#loans',
+    '/app/dashboard': '#dashboard',
+    '/app/savings': '#savings',
+    '/app/saving-rate': '#saving-rate',
+  };
+
   private previousEl = '';
 
-  constructor() {
+  constructor(private router: Router) {
 
   }
 
@@ -21,5 +31,10 @@ export class LeftNavBarService {
     $(el).addClass('active');
     $('#mainTitle').html($(el).attr('title'));
     this.previousEl = el;
+  }
+
+  public navigate(path, params) {
+    this.router.navigate([path], params);
+    this.clickLink(this.linkMap[path]);
   }
 }

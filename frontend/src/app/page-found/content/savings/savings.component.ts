@@ -2,6 +2,8 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {NotificationsService} from '../../../utils/notifications';
 import Swal from 'sweetalert2';
 import {SavingsService} from './savings.service';
+import {FinanceService} from '../utils/finance.service';
+import {LeftNavBarService} from '../../left-nav-bar/left-nav-bar.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -47,7 +49,8 @@ export class SavingsComponent implements OnInit, AfterViewInit {
 
   members: any[] = [];
 
-  constructor(private savingsService: SavingsService, private notifi: NotificationsService) {
+  constructor(private savingsService: SavingsService, private notifi: NotificationsService,
+              public financeService: FinanceService, private leftNavBarService: LeftNavBarService) {
   }
 
 
@@ -105,48 +108,12 @@ export class SavingsComponent implements OnInit, AfterViewInit {
     );
   }
 
-  addIndex(array: any[]) {
-    for (let index = 0; index < array.length; index++) {
-      array[index].index = index;
-    }
-  }
-
-  getCustomerCode(id) {
-    while (id.length < 3) {
-      id = '0' + id;
-    }
-    return 'MEM' + id;
-  }
-
-  getSavingCode(id) {
-    while (id.length < 5) {
-      id = '0' + id;
-    }
-    return 'INVD' + id;
-  }
-
-  getWithdrawCode(id) {
-    while (id.length < 5) {
-      id = '0' + id;
-    }
-    return 'INVW' + id;
-  }
-
-  cents2rupees(cents) {
-    const rupees = Math.floor(cents / 100);
-    cents = cents % 100 + '';
-    while (cents.length < 2) {
-      cents = '0' + cents;
-    }
-    return rupees + '.' + cents;
-  }
-
   getSum(arr, index, display) {
     let tot = 0;
     for (const x of display) {
       tot += Number(arr[x][index]) * 100;
     }
-    return this.cents2rupees(tot);
+    return this.financeService.cents2rupees(tot);
   }
 
   clickEditSaving(i) {
@@ -155,7 +122,7 @@ export class SavingsComponent implements OnInit, AfterViewInit {
 
     this.saving.id = this.savings[i].id;
     this.saving.member_id = this.savings[i].member_id;
-    this.saving.amount = this.cents2rupees(Number(this.savings[i].amount));
+    this.saving.amount = this.financeService.cents2rupees(Number(this.savings[i].amount));
     this.saving.status = this.savings[i].status;
     this.saving.note = this.savings[i].note;
     this.saving.req_date = this.savings[i].req_date;
@@ -203,7 +170,7 @@ export class SavingsComponent implements OnInit, AfterViewInit {
     const currentClass = this;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Cancel Saving :' + this.getSavingCode(this.savings[i].id),
+      text: 'Cancel Saving :' + this.financeService.getSavingCode(this.savings[i].id),
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'btn-danger',
@@ -229,7 +196,7 @@ export class SavingsComponent implements OnInit, AfterViewInit {
     const currentClass = this;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Cancel Withdrawal :' + this.getWithdrawCode(this.savings[i].id),
+      text: 'Cancel Withdrawal :' + this.financeService.getWithdrawCode(this.savings[i].id),
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'btn-danger',
@@ -271,7 +238,7 @@ export class SavingsComponent implements OnInit, AfterViewInit {
     this.savings = [];
     this.savingsService.getAllMemberSavings().subscribe((data: any) => {
         this.savings = data;
-        this.addIndex(this.savings);
+        this.financeService.addIndex(this.savings);
         this.drawTable();
       }, (err) => {
         this.notifi.error('While fetching Saving details');
@@ -285,7 +252,7 @@ export class SavingsComponent implements OnInit, AfterViewInit {
     this.members = [];
     this.savingsService.getAllCustomers().subscribe((data: any) => {
         this.members = data;
-        this.addIndex(this.members);
+        this.financeService.addIndex(this.members);
       }, (err) => {
         this.notifi.error('While fetching Member details');
       }
@@ -299,6 +266,10 @@ export class SavingsComponent implements OnInit, AfterViewInit {
     this.searchData();
   }
 
+  gotoCustomer(i) {
+    this.leftNavBarService.navigate('/app/customer',
+      { queryParams: { code: this.financeService.getCustomerCode(this.savings[i].member_id) } });
+  }
   /////////////////////////////////////////////////////////////// datatable related code begin
   initDataTable() {
     if (!this.savingsDataTable) {
@@ -384,6 +355,8 @@ export class SavingsComponent implements OnInit, AfterViewInit {
         currClassRef.clickDeleteSaving(row.data()[0]);
       } else if ($(this).hasClass('deleteWithdrawal')) {
         currClassRef.clickDeleteWithdrawal(row.data()[0]);
+      } else if ($(this).hasClass('gotoCustomer')) {
+        currClassRef.gotoCustomer(row.data()[0]);
       }
 
     });
@@ -414,12 +387,12 @@ export class SavingsComponent implements OnInit, AfterViewInit {
         '<button class="btn btn-mini btn-warning editSaving" > <i class="icofont icofont-edit-alt" aria-hidden="true"></i></button> ' +
         '<button class="btn btn-mini btn-danger deleteSaving"> <i class="icofont icofont-ui-delete" aria-hidden="true"></i></button>';
 
-      let withdrawal = this.cents2rupees(saving.amount);
-      let deposit = this.cents2rupees(saving.amount);
-      let code = this.getSavingCode(saving.id);
+      let withdrawal = this.financeService.cents2rupees(saving.amount);
+      let deposit = this.financeService.cents2rupees(saving.amount);
+      let code = this.financeService.getSavingCode(saving.id);
       let status = 'Deposit';
       if (saving.trx_type === 'WITHDRAWAL') {
-        code = this.getWithdrawCode(saving.id);
+        code = this.financeService.getWithdrawCode(saving.id);
         deposit = '0.00';
         status = 'Withdrawal';
         action =
@@ -436,8 +409,12 @@ export class SavingsComponent implements OnInit, AfterViewInit {
         action = '';
       }
 
-      this.savingsDataTable.row.add([saving.index, code, this.getCustomerCode(saving.member_id), saving.req_date,
-        this.cents2rupees(saving.amount), saving.note, status,
+      const memberID =
+        `<button class="btn btn-mini btn-info gotoCustomer">` + this.financeService.getCustomerCode(saving.member_id) + `</button>`;
+
+
+      this.savingsDataTable.row.add([saving.index, code, memberID, saving.req_date,
+        this.financeService.cents2rupees(saving.amount), saving.note, status,
         saving.updated_by, withdrawal, deposit, action]);
 
     }

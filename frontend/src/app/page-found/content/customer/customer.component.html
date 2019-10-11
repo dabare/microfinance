@@ -90,59 +90,44 @@
 
             <div class="row">
               <div class="col-sm-12">
+
                 <div class="text-center">
-                      <h4 class="text-center">{{getCustomerCode(customer.id)}} -- {{customer.name}}</h4>
+                  <h4 class="text-center">{{financeService.getCustomerCode(customer.id)}} -- {{customer.name}}</h4>
                 </div>
+                <h4>Savings Timeline</h4>
+                <table class="table" border="1">
+                  <thead class="table-mail">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount (Rs.)</th>
+                    <th scope="col">Rate %</th>
+                    <th scope="col">Days Passed</th>
+                    <th scope="col">Interest (Rs.)</th>
+                    <th scope="col">Balance (Rs.)</th>
+                    <th scope="col">Total (Rs.)</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let rec of savingHistory; let i = index">
+                    <td class="text-center" scope="row">{{i + 1}}</td>
+                    <td>{{rec.req_date}}</td>
+                    <td>{{rec.description}}</td>
+                    <td class="text-right">{{financeService.cents2rupees(rec.amount)}}</td>
+                    <td class="text-center">{{rec.rate}}</td>
+                    <td class="text-right">{{rec.days_passed}}</td>
+                    <td class="text-right">{{financeService.cents2rupees(rec.interest)}}</td>
+                    <td class="text-right">{{financeService.cents2rupees(rec.balance)}}</td>
+                    <td class="text-right">{{financeService.cents2rupees(rec.total)}}</td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-
-
-            <div class="card">
-
-              <div class="card-block">
-                <div class="page-body">
-
-                  <div class="row">
-                    <div class="col-sm-12">
-                      <h4>Savings History</h4>
-                      <table class="table" border="1">
-                        <thead class="table-mail">
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Description</th>
-                          <th scope="col">Amount (Rs.)</th>
-                          <th scope="col">Rate %</th>
-                          <th scope="col">Days Passed</th>
-                          <th scope="col">Interest (Rs.)</th>
-                          <th scope="col">Balance (Rs.)</th>
-                          <th scope="col">Total (Rs.)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let rec of savingHistory; let i = index">
-                          <td class="text-center" scope="row">{{i + 1}}</td>
-                          <td>{{rec.req_date}}</td>
-                          <td>{{rec.description}}</td>
-                          <td class="text-right">{{financeService.cents2rupees(rec.amount)}}</td>
-                          <td class="text-center">{{rec.rate}}</td>
-                          <td class="text-right">{{rec.days_passed}}</td>
-                          <td class="text-right">{{financeService.cents2rupees(rec.interest)}}</td>
-                          <td class="text-right">{{financeService.cents2rupees(rec.balance)}}</td>
-                          <td class="text-right">{{financeService.cents2rupees(rec.total)}}</td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
-
 
     </div>
 
@@ -155,7 +140,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title" *ngIf="actionMode=='new'">New Member</h4>
-            <h4 class="modal-title" *ngIf="actionMode=='edit'">Edit Member - {{getCustomerCode(customer.id)}}</h4>
+            <h4 class="modal-title" *ngIf="actionMode=='edit'">Edit Member - {{financeService.getCustomerCode(customer.id)}}</h4>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
 
           </div>
@@ -253,7 +238,7 @@
                           <select [disabled]="actionMode=='edit'" [(ngModel)]="customer.representative" name="select"
                                   class="form-control">
                             <option *ngFor="let cus of getInternalCustomers()"
-                                    [ngValue]="cus.id">{{getCustomerCode(cus.id) + ' - ' + cus.name}}</option>
+                                    [ngValue]="cus.id">{{financeService.getCustomerCode(cus.id) + ' - ' + cus.name}}</option>
                           </select>
                         </div>
                       </div>

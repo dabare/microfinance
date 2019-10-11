@@ -95,13 +95,6 @@ export class CustomerComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getCustomerCode(id) {
-    while (id.length < 3) {
-      id = '0' + id;
-    }
-    return 'MEM' + id;
-  }
-
   loadCustomer(i) {
     this.clearCustomer();
     this.customer.id = this.customers[i].id;
@@ -185,10 +178,6 @@ export class CustomerComponent implements OnInit, AfterViewInit {
         this.notifi.error('While fetching Member History');
       }
     );
-  }
-
-  backToAllMembers(){
-    this.actionMode = '';
   }
 
   clearCustomer() {
@@ -364,10 +353,11 @@ export class CustomerComponent implements OnInit, AfterViewInit {
 
       let rep = 'FEC Member';
       if (cus.representative !== '-1') {
-        rep = this.findCustomerById(cus.representative) ? this.getCustomerCode(this.findCustomerById(cus.representative).id) :
+        rep = this.findCustomerById(cus.representative) ?
+          this.financeService.getCustomerCode(this.findCustomerById(cus.representative).id) :
           'DELETED USER';
       }
-      this.customerDataTable.row.add([cus.index, this.getCustomerCode(cus.id), cus.name, cus.nic,
+      this.customerDataTable.row.add([cus.index, this.financeService.getCustomerCode(cus.id), cus.name, cus.nic,
         cus.tel, cus.email, rep, cus.req_date, cus.updated_by, action]);
 
     }

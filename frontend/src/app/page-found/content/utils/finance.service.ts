@@ -10,6 +10,47 @@ export class FinanceService {
   constructor() {
   }
 
+  public addIndex(array: any[]) {
+    for (let index = 0; index < array.length; index++) {
+      array[index].index = index;
+    }
+  }
+
+  public getCustomerCode(id) {
+    while (id.length < 3) {
+      id = '0' + id;
+    }
+    return 'MEM' + id;
+  }
+
+  public getDepositCode(id) {
+    while (id.length < 5) {
+      id = '0' + id;
+    }
+    return 'INVL' + id;
+  }
+
+  public getSavingCode(id) {
+    while (id.length < 5) {
+      id = '0' + id;
+    }
+    return 'INVD' + id;
+  }
+
+  public getWithdrawCode(id) {
+    while (id.length < 5) {
+      id = '0' + id;
+    }
+    return 'INVW' + id;
+  }
+
+  public getLoanCode(id) {
+    while (id.length < 4) {
+      id = '0' + id;
+    }
+    return 'LOAN' + id;
+  }
+
   public cents2rupees(cents) {
     cents = Math.ceil(cents);
     let sign = '';
@@ -23,6 +64,10 @@ export class FinanceService {
       cents = '0' + cents;
     }
     return sign + rupees + '.' + cents;
+  }
+
+  public toLocale(str) {
+    return Number(str.split('.')[0]).toLocaleString('en') + '.' + str.split('.')[1];
   }
 
   public processSavingHistory(data: any[]) {
@@ -91,4 +136,46 @@ export class FinanceService {
     return data.slice(firstSaving - 1, data.length);
   }
 
+  public processLoanHistory(data: any[], initDate, amount, durationMonths, rate, penalty) {
+    const interest = (amount * rate * durationMonths) / 1200;
+    const total = amount + interest;
+    const rental = total / durationMonths;
+    data = this.preProcessLoanData(data, initDate, total);
+    return data;
+  }
+
+  private preProcessLoanData(data: any[], initDate, total) {
+    for (let i = 0; i < data.length; i++) {
+      data[i].credit = data[i].amount;
+      data[i].debit = 0;
+      data[i].description = data[i].note;
+      if (data[i].status !== '1') {
+        data[i].credit = 0;
+        data[i].description = 'CANCELLED :' + data[i].description;
+      }
+      data[i].trx_type = 'DEPOSIT';
+    }
+    data.unshift({
+      req_date: initDate,
+      description: 'Request total',
+      credit: 0,
+      debit: total,
+      trx_type: 'INIT'
+    });
+    const d = new Date();
+    let dd = d.getFullYear() + '-' + (d.getMonth() + 1) ;
+    if ( d.getDate() < 10) {
+      dd += '-0' + d.getDate();
+    } else {
+      dd += '-' + d.getDate();
+    }
+    data.push({
+        req_date: dd,
+        description: 'Due amount',
+        credit: 0,
+        debit: 0,
+        trx_type: 'TODAY'
+      });
+    return data;
+  }
 }

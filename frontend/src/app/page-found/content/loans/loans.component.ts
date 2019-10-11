@@ -2,6 +2,9 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {NotificationsService} from '../../../utils/notifications';
 import Swal from 'sweetalert2';
 import {LoansService} from './loans.service';
+import {FinanceService} from '../utils/finance.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {LeftNavBarService} from '../../left-nav-bar/left-nav-bar.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -49,11 +52,18 @@ export class LoansComponent implements OnInit, AfterViewInit {
 
   customers: any[] = [];
 
-  constructor(private loansService: LoansService, private notifi: NotificationsService) {
+  deposits: any[] = [];
+  constructor(private route: ActivatedRoute, private loansService: LoansService, private notifi: NotificationsService,
+              public financeService: FinanceService, private leftNavBarService: LeftNavBarService) {
   }
 
 
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params && params.code) {
+        this.loansDataTableSearch = params.code;
+      }
+    });
     this.clearLoan();
   }
 
@@ -92,44 +102,18 @@ export class LoansComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getCustomerCode(id) {
-    while (id.length < 3) {
-      id = '0' + id;
-    }
-    return 'MEM' + id;
-  }
-
-  getLoanCode(id) {
-    while (id.length < 4) {
-      id = '0' + id;
-    }
-    return 'LOAN' + id;
-  }
-
-  cents2rupees(cents) {
-    const rupees = Math.floor(cents / 100);
-    cents = cents % 100 + '';
-    while (cents.length < 2) {
-      cents = '0' + cents;
-    }
-    return rupees + '.' + cents;
-  }
-
-  clickEditLoan(i) {
-    this.actionMode = 'edit';
-    this.clearLoan();
-
+  loadLoan(i) {
     this.loan.id = this.loans[i].id;
     this.loan.code = this.loans[i].code;
     this.loan.member_id = this.loans[i].member_id;
     this.loan.member_loan_plan_id = this.loans[i].member_loan_plan_id;
     this.loan.rate = this.loans[i].rate;
-    this.loan.amount = this.cents2rupees(Number(this.loans[i].amount));
-    this.loan.charges = this.cents2rupees(Number(this.loans[i].charges));
+    this.loan.amount = this.financeService.cents2rupees(Number(this.loans[i].amount));
+    this.loan.charges = this.financeService.cents2rupees(Number(this.loans[i].charges));
     this.loan.duration_months = this.loans[i].duration_months;
     this.loan.grace_period_days = this.loans[i].grace_period_days;
-    this.loan.late_payment_charge = this.cents2rupees(Number(this.loans[i].late_payment_charge));
-    this.loan.reject_cheque_penalty = this.cents2rupees(Number(this.loans[i].reject_cheque_penalty));
+    this.loan.late_payment_charge = this.financeService.cents2rupees(Number(this.loans[i].late_payment_charge));
+    this.loan.reject_cheque_penalty = this.financeService.cents2rupees(Number(this.loans[i].reject_cheque_penalty));
     this.loan.status = this.loans[i].status;
     this.loan.note = this.loans[i].note;
     this.loan.req_date = this.loans[i].req_date;
@@ -138,7 +122,12 @@ export class LoansComponent implements OnInit, AfterViewInit {
     this.loan.user_set_req_date.year = Number(this.loans[i].req_date.split('-')[0]);
     this.loan.req_user = this.loans[i].req_user;
     this.loan.updated_by = this.loans[i].updated_by;
+  }
 
+  clickEditLoan(i) {
+    this.actionMode = 'edit';
+    this.clearLoan();
+    this.loadLoan(i);
     $('#new_Loan').modal({backdrop: 'static', keyboard: false});
   }
 
@@ -165,7 +154,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
     const currentClass = this;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Delete ' + this.getLoanCode(this.loans[i].id),
+      text: 'Delete ' + this.financeService.getLoanCode(this.loans[i].id),
       type: 'warning',
       showCancelButton: true,
       confirmButtonClass: 'btn-danger',
@@ -185,12 +174,38 @@ export class LoansComponent implements OnInit, AfterViewInit {
       });
   }
 
+  clickInfoLoan(i) {
+    this.actionMode = 'info';
+    this.clearLoan();
+    this.loadLoan(i);
+    this.deposits = [];
+    this.loansService.getDepositsOfLoan(this.loan).subscribe((data: any) => {
+      this.deposits = this.financeService.processLoanHistory(data, this.loan.req_date,
+        Number(this.loan.amount) * 100,
+        Number(this.loan.duration_months),
+        Number(this.loan.rate), 0);
+      console.log(this.deposits);
+      }, (err) => {
+        this.notifi.error('While fetching data');
+      }
+    );
+  }
+
+  gotoCustomer(i) {
+    this.leftNavBarService.navigate('/app/customer',
+      { queryParams: { code: this.financeService.getCustomerCode(this.loans[i].member_id) } });
+  }
+
+  gotoLoanDeposits(i) {
+    this.leftNavBarService.navigate('/app/loan-deposits',
+      { queryParams: { code: this.financeService.getLoanCode(this.loans[i].id) } });
+  }
+
   clearLoan() {
     const today = new Date();
     const dd = today.getDate();
     const mm = today.getMonth() + 1;
     const yyyy = today.getFullYear();
-
 
     this.loan.id = -1;
     this.loan.code = '-';
@@ -299,6 +314,7 @@ export class LoansComponent implements OnInit, AfterViewInit {
           }],
         order: [[0, 'asc']],
       });
+      this.searchData();
     }
   }
 
@@ -323,8 +339,12 @@ export class LoansComponent implements OnInit, AfterViewInit {
         currClassRef.clickEditLoan(row.data()[0]);
       } else if ($(this).hasClass('deleteLoan')) {
         currClassRef.clickDeleteLoan(row.data()[0]);
-      } else if ($(this).hasClass('showUpdateModal')) {
-
+      } else if ($(this).hasClass('infoLoan')) {
+        currClassRef.clickInfoLoan(row.data()[0]);
+      } else if ($(this).hasClass('gotoCustomer')) {
+        currClassRef.gotoCustomer(row.data()[0]);
+      } else if ($(this).hasClass('gotoLoanDeposits')) {
+        currClassRef.gotoLoanDeposits(row.data()[0]);
       }
 
     });
@@ -352,11 +372,20 @@ export class LoansComponent implements OnInit, AfterViewInit {
 //     this.dataTable.rows().clear().draw();
     for (const loan of this.loans) {
       const action =
+        '<button class="btn btn-mini btn-info infoLoan" > <i class="icofont icofont-info" aria-hidden="true"></i></button> ' +
         '<button class="btn btn-mini btn-warning editLoan" > <i class="icofont icofont-edit-alt" aria-hidden="true"></i></button> ' +
         '<button class="btn btn-mini btn-danger deleteLoan"> <i class="icofont icofont-ui-delete" aria-hidden="true"></i></button>';
 
-      this.loansDataTable.row.add([loan.index, this.getLoanCode(loan.id), this.getCustomerCode(loan.member_id),
-        loan.req_date, loan.rate + '%', this.cents2rupees(loan.amount), loan.duration_months, loan.note,
+      const memberID =
+        `<button class="btn btn-mini btn-info gotoCustomer">` + this.financeService.getCustomerCode(loan.member_id) + `</button>`;
+      const loanID =
+        `<button class="btn btn-mini btn-info gotoLoanDeposits">` + this.financeService.getLoanCode(loan.id) + `</button>`;
+
+
+      this.loansDataTable.row.add([loan.index, loanID,
+        memberID,
+        loan.req_date, loan.rate + '%', this.financeService.toLocale(this.financeService.cents2rupees(loan.amount)),
+        loan.duration_months, loan.note,
         loan.updated_by, this.loanStatus[loan.status], action]);
 
     }
