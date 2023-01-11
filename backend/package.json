@@ -12,8 +12,8 @@
     "body-parser": "~1.5.2",
     "carbone": "^1.2.1",
     "cors": "^2.8.5",
-    "express": "~4.7.2",
-    "method-override": "~2.1.2",
+    "express": "~4.18.2",
+    "method-override": "~2.3.10",
     "mongoose": "~3.6.2",
     "morgan": "~1.2.2",
     "mysql": "^2.17.1"
